@@ -1,0 +1,41 @@
+#pragma once
+#include <memory>
+#include "Window.h"
+#include "Renderer.h"
+#include "input.h"
+
+
+class Application 
+{
+	using Keyboard = Input::Keyboard;
+	using Mouse = Input::Mouse;
+
+public:
+	friend int main();
+
+public:
+	Application();
+	~Application() = default;
+
+protected:
+	// empty virtual functions for encapsulated game class
+	virtual void Init() {}
+	virtual void Input() {}
+	virtual void Update() {}
+	virtual void FixedUpdate() {}
+	virtual void Render() {}
+
+private:
+	int Run();
+
+private:
+	// objects
+	std::unique_ptr<Window> window_;
+	std::unique_ptr<Renderer> renderer_;
+	std::unique_ptr<Keyboard> keyboard_;
+	std::unique_ptr<Mouse> mouse_;
+
+	// values
+	bool is_running{ true };
+
+};

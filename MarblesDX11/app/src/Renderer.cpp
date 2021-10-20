@@ -1,9 +1,14 @@
 #include "Renderer.h"
 #include <d3dcompiler.h>
 
+#include <cmath>
+#include <DirectXMath.h>
+namespace DX = DirectX;
+
 // adds the lib to the linker 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
+
 
 Renderer::Renderer(HWND w_handle)
 {
@@ -11,35 +16,56 @@ Renderer::Renderer(HWND w_handle)
 	CreateDeviceAndSwapChain(data);
 }
 
-void Renderer::DrawTriangle()
+void Renderer::DrawBadassCube(float angle, float x, float y)
 {
 	struct Vertex 
 	{ 
-		float x; float y; 
+		struct
+		{
+			float x;
+			float y;
+			float z;
+		} 
+		pos;
+
+		struct
+		{
+			unsigned char r;
+			unsigned char g;
+			unsigned char b;
+			unsigned char a;
+		}
+		color;
 	};
 
 	// points representing triangle
 	const Vertex vertices[] = 
 	{ 
-		{   0.f, .5f }, 
-		{  .5f, -.5f }, 
-		{ -.5f, -.5f } 
+		{  -1.f, -1.f, -1.f, 255, 255, 0 },
+		{   1.f, -1.f, -1.f, 255, 0, 255 },
+		{  -1.f,  1.f, -1.f, 0, 255, 255 },
+		{   1.f,  1.f, -1.f, 255, 0, 0 },
+		{  -1.f, -1.f,  1.f, 0, 255, 0 },
+		{   1.f, -1.f,  1.f, 0, 0, 255 },
+		{  -1.f,  1.f,  1.f, 50, 50, 50 },
+		{   1.f,  1.f,  1.f, 255, 0, 100 }
 	};
 	
+	// create vertex buffer
 	auto v_buffer = com_ptr<ID3D11Buffer>();
 	
-	auto data = D3D11_BUFFER_DESC{ 0 };
-	data.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	data.ByteWidth = sizeof( vertices );
-	data.CPUAccessFlags = 0u;
-	data.MiscFlags = 0u;
-	data.StructureByteStride = sizeof( Vertex );
-	data.Usage = D3D11_USAGE_DEFAULT;
+	auto v_data = D3D11_BUFFER_DESC{ 0 };
+	v_data.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	v_data.ByteWidth = sizeof( vertices );
+	v_data.CPUAccessFlags = 0u;
+	v_data.MiscFlags = 0u;
+	v_data.StructureByteStride = sizeof( Vertex );
+	v_data.Usage = D3D11_USAGE_DEFAULT;
 
-	auto sub_data = D3D11_SUBRESOURCE_DATA{ 0 };
-	sub_data.pSysMem = vertices;
+	auto v_sub_data = D3D11_SUBRESOURCE_DATA{ 0 };
+	v_sub_data.pSysMem = vertices;
 
-	device_->CreateBuffer(&data, &sub_data, v_buffer.GetAddressOf());
+	device_->CreateBuffer(&v_data, &v_sub_data, v_buffer.GetAddressOf());
 
 	// bind vertex buffer to pipeline
 	const UINT stride = sizeof( Vertex );
@@ -48,6 +74,119 @@ void Renderer::DrawTriangle()
 	
 	// ooze
 	auto blob = com_ptr<ID3DBlob>();
+
+	// create index buffer
+	const unsigned short indices[] =
+	{
+		0,2,1, 
+		2,3,1,
+		1,3,5,
+		3,7,5,
+		2,6,3,
+		3,6,7,
+		4,5,7,
+		4,7,6,
+		0,4,2,
+		2,4,6,
+		0,1,4,
+		1,5,4
+	};
+
+	auto i_buffer = com_ptr<ID3D11Buffer>();
+
+	auto i_data = D3D11_BUFFER_DESC{ 0 };
+	i_data.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	i_data.ByteWidth = sizeof(indices);
+	i_data.CPUAccessFlags = 0u;
+	i_data.MiscFlags = 0u;
+	i_data.StructureByteStride = sizeof(unsigned short);
+	i_data.Usage = D3D11_USAGE_DEFAULT;
+
+	auto i_sub_data = D3D11_SUBRESOURCE_DATA{ 0 };
+	i_sub_data.pSysMem = indices;
+
+	device_->CreateBuffer(&i_data, &i_sub_data, i_buffer.GetAddressOf());
+
+	// bind index buffer to pipeline
+	context_->IASetIndexBuffer(i_buffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
+
+	// create constant buffer for transform matrix
+	struct ConstantBuffer
+	{
+		DX::XMMATRIX transform;
+	};
+
+	auto c_buffer = ConstantBuffer
+	{
+		.transform
+		{
+			DX::XMMatrixTranspose(
+				DX::XMMatrixRotationZ(angle) * 
+				DX::XMMatrixRotationX(angle) *
+				DX::XMMatrixTranslation(x, y, 4.f) * 
+				DX::XMMatrixPerspectiveLH(1.f, 9.f/16.f, 0.5f, 10.f))
+		}
+	};
+
+	auto c_buffer_ptr = com_ptr<ID3D11Buffer>();
+
+	auto cb_data = D3D11_BUFFER_DESC{ 0 };
+	cb_data.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cb_data.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cb_data.Usage = D3D11_USAGE_DYNAMIC;
+	cb_data.ByteWidth = sizeof(c_buffer);
+	cb_data.StructureByteStride = 0u;
+	cb_data.MiscFlags = 0u;
+
+	auto cb_sub_data = D3D11_SUBRESOURCE_DATA{ .pSysMem = &c_buffer };
+
+	device_->CreateBuffer(&cb_data, &cb_sub_data, c_buffer_ptr.GetAddressOf() );
+
+	// bind constant buffer to vertex shader
+	context_->VSSetConstantBuffers(0u, 1u, c_buffer_ptr.GetAddressOf());
+
+	//// new constant buffer for solid colour faces
+	//struct ConstantBuffer2
+	//{
+	//	struct
+	//	{
+	//		float r;
+	//		float g;
+	//		float b;
+	//		float a;
+	//	} 
+	//	face_colours[6];
+	//};
+
+	//const ConstantBuffer2 c_buffer_2 =
+	//{
+	//	{
+	//		{ 1.f, 0.f, 0.f },
+	//		{ 0.f, 1.f, 0.f },
+	//		{ 0.f, 0.f, 1.f },
+	//		{ 1.f, 1.f, 0.f },
+	//		{ 1.f, 0.f, 1.f },
+	//		{ 0.f, 1.f, 1.f }
+	//	}
+	//};
+
+	//auto c2_buffer_ptr = com_ptr<ID3D11Buffer>();
+
+	//auto cb2_data = D3D11_BUFFER_DESC{ 0 };
+	//cb2_data.CPUAccessFlags = 0u;
+	//cb2_data.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//cb2_data.Usage = D3D11_USAGE_DEFAULT;
+	//cb2_data.ByteWidth = sizeof(c_buffer_2);
+	//cb2_data.StructureByteStride = 0u;
+	//cb2_data.MiscFlags = 0u;
+
+	//auto cb2_sub_data = D3D11_SUBRESOURCE_DATA{ .pSysMem = &c_buffer_2 };
+
+	//device_->CreateBuffer(&cb2_data, &cb2_sub_data, c2_buffer_ptr.GetAddressOf());
+
+	//// bind constant buffer 2 to vertex shader
+	//context_->VSSetConstantBuffers(0u, 1u, c2_buffer_ptr.GetAddressOf());
+
 
 	// create pixel shader
 	auto pixel_shader = com_ptr<ID3D11PixelShader>();
@@ -69,7 +208,9 @@ void Renderer::DrawTriangle()
 	auto input_layout = com_ptr<ID3D11InputLayout>();
 	const D3D11_INPUT_ELEMENT_DESC input_data[] =
 	{
-		{ "Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 12u, D3D11_INPUT_PER_VERTEX_DATA, 0}
+
 	};
 	device_->CreateInputLayout(
 		input_data,
@@ -99,8 +240,10 @@ void Renderer::DrawTriangle()
 	context_->RSSetViewports(1u, &vp);
 
 	// draw call
-	auto v_size = static_cast<UINT>(std::size(vertices));
-	context_->Draw( v_size, 0u );
+	//auto v_size = static_cast<UINT>(std::size(vertices));
+	//context_->Draw( v_size, 0u );
+	auto i_size = static_cast<UINT>(std::size(indices));
+	context_->DrawIndexed(i_size, 0u, 0u);
 }
 
 void Renderer::EndFrame()

@@ -76,12 +76,19 @@ namespace Input
 			}
 		}
 
+		float GetX() { return x; }
+		float GetY() { return y; }
+
 	private:
+		float x{ 0 };
+		float y{ 0 };
 
 		void OnMove(Event& e)
 		{
 			auto& mouse = static_cast<MouseMoveEvent&>(e);
-			std::cout << "Mouse x = " << mouse._X << ", y = " << mouse._Y << '\n';
+			x = mouse._X;
+			y = mouse._Y;
+			//std::cout << "Mouse x = " << mouse._X << ", y = " << mouse._Y << '\n';
 		}
 
 		void OnButtonDown(Event& e)

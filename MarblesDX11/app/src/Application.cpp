@@ -37,7 +37,8 @@ int Application::Run()
 
 		renderer_->ClearBuffer(0, 0, 0); // PreRender()
 		Render();
-		renderer_->DrawTriangle();       // testing
+		static float b = 0;
+		renderer_->DrawBadassCube(b += 0.01, mouse_->GetX() / (1920.f/2) -1.f, -mouse_->GetY() / (1080.f/2) + 1.f);       // testing
 		renderer_->EndFrame(); 		     // PostRender()
 	}
 	

@@ -117,7 +117,7 @@ Window::~Window()
 bool Window::ProcessMessages()
 {
 	MSG msg{};
-	while (PeekMessage(&msg, nullptr, 0u, 0u, PM_REMOVE))
+	while (PeekMessage(&msg, nullptr, 0u, 0u, PM_REMOVE) > 0)
 	{
 		if (msg.message == WM_QUIT)
 		{

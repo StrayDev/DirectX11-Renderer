@@ -10,12 +10,16 @@ class Application
 	using Keyboard = Input::Keyboard;
 	using Mouse = Input::Mouse;
 
+
 public:
 	friend int main();
 
 public:
 	Application();
 	~Application() = default;
+
+	// temporary make unique function 
+	static std::unique_ptr<Application> MakeUnique() { return std::make_unique<Application>(); }
 
 protected:
 	// empty virtual functions for encapsulated game class

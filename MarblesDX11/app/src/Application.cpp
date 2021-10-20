@@ -39,7 +39,8 @@ int Application::Run()
 		Render();
 		renderer_->DrawTriangle();       // testing
 		renderer_->EndFrame(); 		     // PostRender()
-
 	}
+	
+	return 0;
 }
 

@@ -1,6 +1,5 @@
 #include "Window.h"
 #include "Event.h"
-#include <iostream>
 
 LRESULT CALLBACK Window::SetupProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {

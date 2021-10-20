@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <DirectXMath.h>
+
 namespace DX = DirectX;
 
 // adds the lib to the linker 
@@ -16,7 +17,7 @@ Renderer::Renderer(HWND w_handle)
 	CreateDeviceAndSwapChain(data);
 }
 
-void Renderer::DrawBadassCube(float angle, float x, float y)
+void Renderer::DrawThickSquare(float angle, float x, float y)
 {
 	struct Vertex 
 	{ 

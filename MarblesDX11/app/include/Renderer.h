@@ -13,7 +13,7 @@ public:
 	Renderer(HWND w_handle);
 	~Renderer() = default;
 
-	void DrawBadassCube(float angle, float x, float y);
+	void DrawThickSquare(float angle, float x, float y);
 
 	void EndFrame();
 	void ClearBuffer(float r, float g, float b) noexcept;

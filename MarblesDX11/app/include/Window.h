@@ -1,9 +1,7 @@
 #pragma once
 
-#include <Windows.h>
+#include <Windows.h> // <-- this is big nasty
 #include <functional>
-
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 class Event;
 

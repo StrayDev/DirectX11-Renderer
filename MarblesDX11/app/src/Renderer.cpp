@@ -25,6 +25,48 @@ Renderer::Renderer(HWND w_handle)
 	auto depth_texture_data = CreateDepthTextureData();
 	auto depth_view_data = CreateDepthViewData();
 	CreateAndSetDepthTextureAndView(depth_texture_data, depth_view_data);
+
+	// --------------cut and past tech-----------------
+	// 
+	// create vertex buffer
+	auto v_data = D3D11_BUFFER_DESC{ 0 };
+	v_data.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	v_data.ByteWidth = sizeof(Cube::Verticies);
+	v_data.CPUAccessFlags = 0u;
+	v_data.MiscFlags = 0u;
+	v_data.StructureByteStride = sizeof(Vertex);
+	v_data.Usage = D3D11_USAGE_DEFAULT;
+
+	auto v_sub_data = D3D11_SUBRESOURCE_DATA{ 0 };
+	v_sub_data.pSysMem = Cube::Verticies;
+
+	device_->CreateBuffer(&v_data, &v_sub_data, vertex_buffer_.GetAddressOf());
+
+	// bind vertex buffer to pipeline
+	const UINT stride = sizeof(Vertex);
+	const UINT offset = 0u;
+	context_->IASetVertexBuffers(0u, 1u, vertex_buffer_.GetAddressOf(), &stride, &offset);
+
+	// --------------cut and past tech-----------------
+    // 
+    // create index buffer
+	//auto i_buffer = com_ptr<ID3D11Buffer>();
+
+	auto i_data = D3D11_BUFFER_DESC{ 0 };
+	i_data.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	i_data.ByteWidth = sizeof(Cube::Indices);
+	i_data.CPUAccessFlags = 0u;
+	i_data.MiscFlags = 0u;
+	i_data.StructureByteStride = sizeof(unsigned short);
+	i_data.Usage = D3D11_USAGE_DEFAULT;
+
+	auto i_sub_data = D3D11_SUBRESOURCE_DATA{ 0 };
+	i_sub_data.pSysMem = Cube::Indices;
+
+	device_->CreateBuffer(&i_data, &i_sub_data, index_buffer_.GetAddressOf());
+
+	// bind index buffer to pipeline
+	context_->IASetIndexBuffer(index_buffer_.Get(), DXGI_FORMAT_R16_UINT, 0u);
 }
 
 void Renderer::CreatePrimitive()
@@ -37,70 +79,6 @@ void Renderer::RenderPrimitive()
 
 void Renderer::DrawThickSquare(float angle, float x, float y)
 {
-	// create vertex buffer
-	auto v_buffer = com_ptr<ID3D11Buffer>();
-	
-	auto v_data = D3D11_BUFFER_DESC{ 0 };
-	v_data.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	v_data.ByteWidth = sizeof( Primitives::Cube );
-	v_data.CPUAccessFlags = 0u;
-	v_data.MiscFlags = 0u;
-	v_data.StructureByteStride = sizeof( Vertex );
-	v_data.Usage = D3D11_USAGE_DEFAULT;
-
-	auto v_sub_data = D3D11_SUBRESOURCE_DATA{ 0 };
-	v_sub_data.pSysMem = Primitives::Cube;
-
-	device_->CreateBuffer(&v_data, &v_sub_data, v_buffer.GetAddressOf());
-
-	// bind vertex buffer to pipeline
-	const UINT stride = sizeof( Vertex );
-	const UINT offset = 0u;
-	context_->IASetVertexBuffers(0u, 1u, v_buffer.GetAddressOf(), &stride, &offset);
-	
-	// ooze
-	auto blob = com_ptr<ID3DBlob>();
-
-	// create index buffer
-	const unsigned short indices[] =
-	{
-		0,2,1, 
-		2,3,1,
-		1,3,5,
-		3,7,5,
-		2,6,3,
-		3,6,7,
-		4,5,7,
-		4,7,6,
-		0,4,2,
-		2,4,6,
-		0,1,4,
-		1,5,4
-	};
-
-	auto i_buffer = com_ptr<ID3D11Buffer>();
-
-	auto i_data = D3D11_BUFFER_DESC{ 0 };
-	i_data.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	i_data.ByteWidth = sizeof(indices);
-	i_data.CPUAccessFlags = 0u;
-	i_data.MiscFlags = 0u;
-	i_data.StructureByteStride = sizeof(unsigned short);
-	i_data.Usage = D3D11_USAGE_DEFAULT;
-
-	auto i_sub_data = D3D11_SUBRESOURCE_DATA{ 0 };
-	i_sub_data.pSysMem = indices;
-
-	device_->CreateBuffer(&i_data, &i_sub_data, i_buffer.GetAddressOf());
-
-	// bind index buffer to pipeline
-	context_->IASetIndexBuffer(i_buffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
-
-	// create constant buffer for transform matrix
-	struct ConstantBuffer
-	{
-		DX::XMMATRIX transform;
-	};
 
 	auto c_buffer = ConstantBuffer
 	{
@@ -175,16 +153,16 @@ void Renderer::DrawThickSquare(float angle, float x, float y)
 
 	// create pixel shader
 	auto pixel_shader = com_ptr<ID3D11PixelShader>();
-	D3DReadFileToBlob(L"PixelShader.cso", &blob);
-	device_->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixel_shader);
+	D3DReadFileToBlob(L"PixelShader.cso", &blob_);
+	device_->CreatePixelShader(blob_->GetBufferPointer(), blob_->GetBufferSize(), nullptr, &pixel_shader);
 
 	// bind pixel shader to pipeline
 	context_->PSSetShader(pixel_shader.Get(), 0, 0);
 
 	// create vertex shader
 	auto vertex_shader = com_ptr<ID3D11VertexShader>();
-	D3DReadFileToBlob( L"VertexShader.cso", &blob );
-	device_->CreateVertexShader( blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertex_shader);
+	D3DReadFileToBlob( L"VertexShader.cso", &blob_ );
+	device_->CreateVertexShader( blob_->GetBufferPointer(), blob_->GetBufferSize(), nullptr, &vertex_shader);
 
 	// bind vertex shader to pipeline
 	context_->VSSetShader( vertex_shader.Get(), 0, 0 );
@@ -198,8 +176,8 @@ void Renderer::DrawThickSquare(float angle, float x, float y)
 	device_->CreateInputLayout(
 		input_data,
 		static_cast<UINT>(std::size(input_data)),
-		blob->GetBufferPointer(),
-		blob->GetBufferSize(),
+		blob_->GetBufferPointer(),
+		blob_->GetBufferSize(),
 		&input_layout
 	);
 
@@ -220,7 +198,7 @@ void Renderer::DrawThickSquare(float angle, float x, float y)
 	context_->RSSetViewports(1u, &vp);
 
 	// draw call
-	auto i_size = static_cast<UINT>(std::size(indices));
+	auto i_size = static_cast<UINT>(std::size(Cube::Indices));
 	context_->DrawIndexed(i_size, 0u, 0u);
 }
 

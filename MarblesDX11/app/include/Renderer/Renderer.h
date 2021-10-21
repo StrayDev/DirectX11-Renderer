@@ -36,7 +36,12 @@ private:
 	com_ptr<ID3D11Device> device_{ nullptr };
 	com_ptr<IDXGISwapChain> swap_chain_{ nullptr };
 	com_ptr<ID3D11DeviceContext> context_{ nullptr };
+	
 	com_ptr<ID3D11RenderTargetView> render_target_{ nullptr };
 	com_ptr<ID3D11DepthStencilView> depth_stencil_view_{ nullptr };
+
+	com_ptr<ID3DBlob> blob_{ nullptr };
+	com_ptr<ID3D11Buffer> vertex_buffer_{ nullptr };
+	com_ptr<ID3D11Buffer> index_buffer_{ nullptr };
 
 };

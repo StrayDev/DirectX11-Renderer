@@ -27,5 +27,6 @@ private:
 	com_ptr<IDXGISwapChain> swap_chain_{ nullptr };
 	com_ptr<ID3D11DeviceContext> context_{ nullptr };
 	com_ptr<ID3D11RenderTargetView> render_target_{ nullptr };
+	com_ptr<ID3D11DepthStencilView> depth_stencil_view_{ nullptr };
 
 };

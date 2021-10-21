@@ -15,6 +15,43 @@ Renderer::Renderer(HWND w_handle)
 {
 	auto data = CreateSwapChainDescription(w_handle);
 	CreateDeviceAndSwapChain(data);
+
+	// set up the depth buffer discription
+	D3D11_DEPTH_STENCIL_DESC depth_discription{ 0 };
+	depth_discription.DepthEnable = TRUE;
+	depth_discription.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depth_discription.DepthFunc = D3D11_COMPARISON_LESS;
+	auto db_state = com_ptr<ID3D11DepthStencilState>();
+	device_->CreateDepthStencilState(&depth_discription, &db_state);
+
+	// bind depth state
+	context_->OMSetDepthStencilState(db_state.Get(), 1u);
+
+	// create depth stencil texture
+	auto depth_stencil = com_ptr<ID3D11Texture2D>();
+	auto depth_data = D3D11_TEXTURE2D_DESC{ };
+	depth_data.Width = 1920u;
+	depth_data.Height = 1080u;
+	depth_data.MipLevels = 1u;
+	depth_data.ArraySize = 1u;
+	depth_data.Format = DXGI_FORMAT_D32_FLOAT;
+	depth_data.SampleDesc.Count = 1u;
+	depth_data.SampleDesc.Quality = 0u;
+	depth_data.Usage = D3D11_USAGE_DEFAULT;
+	depth_data.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+	device_->CreateTexture2D(&depth_data, nullptr, &depth_stencil);
+
+	// create view of depth stencil texture
+	auto ds_view_data = D3D11_DEPTH_STENCIL_VIEW_DESC{ };
+	ds_view_data.Format = DXGI_FORMAT_D32_FLOAT;
+	ds_view_data.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	ds_view_data.Texture2D.MipSlice = 0u;
+	device_->CreateDepthStencilView(depth_stencil.Get(), &ds_view_data, &depth_stencil_view_);
+	
+	// bind the depth stencil view
+	context_->OMSetRenderTargets(1u, render_target_.GetAddressOf(), depth_stencil_view_.Get());
+
 }
 
 void Renderer::DrawThickSquare(float angle, float x, float y)
@@ -28,28 +65,19 @@ void Renderer::DrawThickSquare(float angle, float x, float y)
 			float z;
 		} 
 		pos;
-
-		struct
-		{
-			unsigned char r;
-			unsigned char g;
-			unsigned char b;
-			unsigned char a;
-		}
-		color;
 	};
 
-	// points representing triangle
+	// points representing object
 	const Vertex vertices[] = 
 	{ 
-		{  -1.f, -1.f, -1.f, 255, 255, 0 },
-		{   1.f, -1.f, -1.f, 255, 0, 255 },
-		{  -1.f,  1.f, -1.f, 0, 255, 255 },
-		{   1.f,  1.f, -1.f, 255, 0, 0 },
-		{  -1.f, -1.f,  1.f, 0, 255, 0 },
-		{   1.f, -1.f,  1.f, 0, 0, 255 },
-		{  -1.f,  1.f,  1.f, 50, 50, 50 },
-		{   1.f,  1.f,  1.f, 255, 0, 100 }
+		{  -1.f, -1.f, -1.f },
+		{   1.f, -1.f, -1.f },
+		{  -1.f,  1.f, -1.f },
+		{   1.f,  1.f, -1.f },
+		{  -1.f, -1.f,  1.f },
+		{   1.f, -1.f,  1.f },
+		{  -1.f,  1.f,  1.f },
+		{   1.f,  1.f,  1.f }
 	};
 	
 	// create vertex buffer
@@ -146,47 +174,46 @@ void Renderer::DrawThickSquare(float angle, float x, float y)
 	// bind constant buffer to vertex shader
 	context_->VSSetConstantBuffers(0u, 1u, c_buffer_ptr.GetAddressOf());
 
-	//// new constant buffer for solid colour faces
-	//struct ConstantBuffer2
-	//{
-	//	struct
-	//	{
-	//		float r;
-	//		float g;
-	//		float b;
-	//		float a;
-	//	} 
-	//	face_colours[6];
-	//};
+	// new constant buffer for solid colour faces
+	struct ConstantBuffer2
+	{
+		struct
+		{
+			float r;
+			float g;
+			float b;
+			float a;
+		} 
+		face_colours[6];
+	};
 
-	//const ConstantBuffer2 c_buffer_2 =
-	//{
-	//	{
-	//		{ 1.f, 0.f, 0.f },
-	//		{ 0.f, 1.f, 0.f },
-	//		{ 0.f, 0.f, 1.f },
-	//		{ 1.f, 1.f, 0.f },
-	//		{ 1.f, 0.f, 1.f },
-	//		{ 0.f, 1.f, 1.f }
-	//	}
-	//};
+	const ConstantBuffer2 cb2 =
+	{
+		{
+			{ 1.f, 0.f, 0.f },
+			{ 0.f, 1.f, 0.f },
+			{ 0.f, 0.f, 1.f },
+			{ 1.f, 1.f, 0.f },
+			{ 1.f, 0.f, 1.f },
+			{ 0.f, 1.f, 1.f }
+		}
+	};
 
-	//auto c2_buffer_ptr = com_ptr<ID3D11Buffer>();
+	auto c2_buffer_ptr = com_ptr<ID3D11Buffer>();
+	auto cb2_data = D3D11_BUFFER_DESC();
+	cb2_data.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cb2_data.Usage = D3D11_USAGE_DEFAULT;
+	cb2_data.CPUAccessFlags = 0u;
+	cb2_data.MiscFlags = 0u;
+	cb2_data.ByteWidth = sizeof(cb2);
+	cb2_data.StructureByteStride = 0u;
+	auto cb2_sub_data = D3D11_SUBRESOURCE_DATA();
+	cb2_sub_data.pSysMem = &cb2;
 
-	//auto cb2_data = D3D11_BUFFER_DESC{ 0 };
-	//cb2_data.CPUAccessFlags = 0u;
-	//cb2_data.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	//cb2_data.Usage = D3D11_USAGE_DEFAULT;
-	//cb2_data.ByteWidth = sizeof(c_buffer_2);
-	//cb2_data.StructureByteStride = 0u;
-	//cb2_data.MiscFlags = 0u;
+	device_->CreateBuffer(&cb2_data, &cb2_sub_data, c2_buffer_ptr.GetAddressOf());
 
-	//auto cb2_sub_data = D3D11_SUBRESOURCE_DATA{ .pSysMem = &c_buffer_2 };
-
-	//device_->CreateBuffer(&cb2_data, &cb2_sub_data, c2_buffer_ptr.GetAddressOf());
-
-	//// bind constant buffer 2 to vertex shader
-	//context_->VSSetConstantBuffers(0u, 1u, c2_buffer_ptr.GetAddressOf());
+	// bind constant buffer 2 to vertex shader
+	context_->PSSetConstantBuffers(0u, 1u, c2_buffer_ptr.GetAddressOf());
 
 
 	// create pixel shader
@@ -210,8 +237,6 @@ void Renderer::DrawThickSquare(float angle, float x, float y)
 	const D3D11_INPUT_ELEMENT_DESC input_data[] =
 	{
 		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{ "Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 12u, D3D11_INPUT_PER_VERTEX_DATA, 0}
-
 	};
 	device_->CreateInputLayout(
 		input_data,
@@ -225,7 +250,7 @@ void Renderer::DrawThickSquare(float angle, float x, float y)
 	context_->IASetInputLayout(input_layout.Get());
 
 	// bind render target
-	context_->OMSetRenderTargets( 1u, render_target_.GetAddressOf(), nullptr);
+	//context_->OMSetRenderTargets( 1u, render_target_.GetAddressOf(), nullptr);
 
 	// set the primitive type
 	context_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -241,8 +266,6 @@ void Renderer::DrawThickSquare(float angle, float x, float y)
 	context_->RSSetViewports(1u, &vp);
 
 	// draw call
-	//auto v_size = static_cast<UINT>(std::size(vertices));
-	//context_->Draw( v_size, 0u );
 	auto i_size = static_cast<UINT>(std::size(indices));
 	context_->DrawIndexed(i_size, 0u, 0u);
 }
@@ -256,6 +279,7 @@ void Renderer::ClearBuffer(float r, float g, float b) noexcept
 {
 	const float colour[] { r, g, b, 0.f };
 	context_->ClearRenderTargetView( render_target_.Get(), colour );
+	context_->ClearDepthStencilView(depth_stencil_view_.Get(), D3D11_CLEAR_DEPTH, 1.f, 0u);
 }
 
 DXGI_SWAP_CHAIN_DESC Renderer::CreateSwapChainDescription(HWND w_handle)

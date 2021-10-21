@@ -13,14 +13,24 @@ public:
 	Renderer(HWND w_handle);
 	~Renderer() = default;
 
-	void DrawThickSquare(float angle, float x, float y);
+	void CreatePrimitive();
+	void RenderPrimitive();
 
-	void EndFrame();
+	void DrawThickSquare(float angle, float x, float y);
+	
 	void ClearBuffer(float r, float g, float b) noexcept;
+	void EndFrame();
 
 private:
 	DXGI_SWAP_CHAIN_DESC CreateSwapChainDescription(HWND w_handle);
-	void CreateDeviceAndSwapChain(DXGI_SWAP_CHAIN_DESC& desc);
+	void CreateDeviceAndSwapChain(DXGI_SWAP_CHAIN_DESC& data);
+
+	D3D11_DEPTH_STENCIL_DESC CreateDepthBufferData();
+	void CreateAndSetDepthBufferState(D3D11_DEPTH_STENCIL_DESC& data);
+
+	D3D11_TEXTURE2D_DESC CreateDepthTextureData();
+	D3D11_DEPTH_STENCIL_VIEW_DESC CreateDepthViewData();
+	void CreateAndSetDepthTextureAndView(D3D11_TEXTURE2D_DESC& texture, D3D11_DEPTH_STENCIL_VIEW_DESC& view);
 
 private:
 	com_ptr<ID3D11Device> device_{ nullptr };

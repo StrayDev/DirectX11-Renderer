@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include "Window.h"
-#include "Renderer.h"
+#include "Renderer/Renderer.h"
 #include "input.h"
 
 
@@ -23,7 +23,8 @@ public:
 
 protected:
 	// empty virtual functions for encapsulated game class
-	virtual void Init() {}
+	virtual void Init();
+
 	virtual void Input() {}
 	virtual void Update() {}
 	virtual void FixedUpdate() {}

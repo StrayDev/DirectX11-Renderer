@@ -156,7 +156,9 @@
     <ClInclude Include="app\include\Application.h" />
     <ClInclude Include="app\include\Event.h" />
     <ClInclude Include="app\include\Input.h" />
-    <ClInclude Include="app\include\Renderer.h" />
+    <ClInclude Include="app\include\Renderer\IRendereable.h" />
+    <ClInclude Include="app\include\Renderer\Primitives.h" />
+    <ClInclude Include="app\include\Renderer\Renderer.h" />
     <ClInclude Include="app\include\Window.h" />
   </ItemGroup>
   <ItemGroup>

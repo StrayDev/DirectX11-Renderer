@@ -18,6 +18,12 @@ Application::Application()
 	window_->SetMouseCallback([&](Event&& e) { mouse_->OnEvent(e); });
 }
 
+void Application::Init()
+{
+	// auto cube = renderer_->CreatePrimitive(Shape::Cube);
+	// listofobjects.pushback(cube)
+}
+
 int Application::Run()
 {
 	while (is_running)

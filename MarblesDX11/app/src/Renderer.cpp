@@ -1,98 +1,55 @@
-#include "Renderer.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/Primitives.h"
+
 #include <d3dcompiler.h>
-
-#include <cmath>
 #include <DirectXMath.h>
-
-namespace DX = DirectX;
+#include <cmath>
 
 // adds the lib to the linker 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
+namespace DX = DirectX;
 
 Renderer::Renderer(HWND w_handle)
 {
-	auto data = CreateSwapChainDescription(w_handle);
-	CreateDeviceAndSwapChain(data);
+	// create the swap chain
+	auto swap_chain_data = CreateSwapChainDescription(w_handle);
+	CreateDeviceAndSwapChain(swap_chain_data);
 
-	// set up the depth buffer discription
-	D3D11_DEPTH_STENCIL_DESC depth_discription{ 0 };
-	depth_discription.DepthEnable = TRUE;
-	depth_discription.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depth_discription.DepthFunc = D3D11_COMPARISON_LESS;
-	auto db_state = com_ptr<ID3D11DepthStencilState>();
-	device_->CreateDepthStencilState(&depth_discription, &db_state);
+	// create and register depth buffer
+	auto depth_buffer_data = CreateDepthBufferData();
+	CreateAndSetDepthBufferState(depth_buffer_data);
 
-	// bind depth state
-	context_->OMSetDepthStencilState(db_state.Get(), 1u);
+	// create and bind the depth texture & view
+	auto depth_texture_data = CreateDepthTextureData();
+	auto depth_view_data = CreateDepthViewData();
+	CreateAndSetDepthTextureAndView(depth_texture_data, depth_view_data);
+}
 
-	// create depth stencil texture
-	auto depth_stencil = com_ptr<ID3D11Texture2D>();
-	auto depth_data = D3D11_TEXTURE2D_DESC{ };
-	depth_data.Width = 1920u;
-	depth_data.Height = 1080u;
-	depth_data.MipLevels = 1u;
-	depth_data.ArraySize = 1u;
-	depth_data.Format = DXGI_FORMAT_D32_FLOAT;
-	depth_data.SampleDesc.Count = 1u;
-	depth_data.SampleDesc.Quality = 0u;
-	depth_data.Usage = D3D11_USAGE_DEFAULT;
-	depth_data.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+void Renderer::CreatePrimitive()
+{
+}
 
-	device_->CreateTexture2D(&depth_data, nullptr, &depth_stencil);
-
-	// create view of depth stencil texture
-	auto ds_view_data = D3D11_DEPTH_STENCIL_VIEW_DESC{ };
-	ds_view_data.Format = DXGI_FORMAT_D32_FLOAT;
-	ds_view_data.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	ds_view_data.Texture2D.MipSlice = 0u;
-	device_->CreateDepthStencilView(depth_stencil.Get(), &ds_view_data, &depth_stencil_view_);
-	
-	// bind the depth stencil view
-	context_->OMSetRenderTargets(1u, render_target_.GetAddressOf(), depth_stencil_view_.Get());
-
+void Renderer::RenderPrimitive()
+{
 }
 
 void Renderer::DrawThickSquare(float angle, float x, float y)
 {
-	struct Vertex 
-	{ 
-		struct
-		{
-			float x;
-			float y;
-			float z;
-		} 
-		pos;
-	};
-
-	// points representing object
-	const Vertex vertices[] = 
-	{ 
-		{  -1.f, -1.f, -1.f },
-		{   1.f, -1.f, -1.f },
-		{  -1.f,  1.f, -1.f },
-		{   1.f,  1.f, -1.f },
-		{  -1.f, -1.f,  1.f },
-		{   1.f, -1.f,  1.f },
-		{  -1.f,  1.f,  1.f },
-		{   1.f,  1.f,  1.f }
-	};
-	
 	// create vertex buffer
 	auto v_buffer = com_ptr<ID3D11Buffer>();
 	
 	auto v_data = D3D11_BUFFER_DESC{ 0 };
 	v_data.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	v_data.ByteWidth = sizeof( vertices );
+	v_data.ByteWidth = sizeof( Primitives::Cube );
 	v_data.CPUAccessFlags = 0u;
 	v_data.MiscFlags = 0u;
 	v_data.StructureByteStride = sizeof( Vertex );
 	v_data.Usage = D3D11_USAGE_DEFAULT;
 
 	auto v_sub_data = D3D11_SUBRESOURCE_DATA{ 0 };
-	v_sub_data.pSysMem = vertices;
+	v_sub_data.pSysMem = Primitives::Cube;
 
 	device_->CreateBuffer(&v_data, &v_sub_data, v_buffer.GetAddressOf());
 
@@ -249,9 +206,6 @@ void Renderer::DrawThickSquare(float angle, float x, float y)
 	// bind vertex layout
 	context_->IASetInputLayout(input_layout.Get());
 
-	// bind render target
-	//context_->OMSetRenderTargets( 1u, render_target_.GetAddressOf(), nullptr);
-
 	// set the primitive type
 	context_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -329,4 +283,54 @@ void Renderer::CreateDeviceAndSwapChain(DXGI_SWAP_CHAIN_DESC& desc)
 		nullptr, 
 		&render_target_
 	);
+}
+
+D3D11_DEPTH_STENCIL_DESC Renderer::CreateDepthBufferData()
+{
+	auto data = D3D11_DEPTH_STENCIL_DESC{ 0 };
+	data.DepthEnable = TRUE;
+	data.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	data.DepthFunc = D3D11_COMPARISON_LESS;
+	return data;
+}
+
+void Renderer::CreateAndSetDepthBufferState(D3D11_DEPTH_STENCIL_DESC& data)
+{
+	auto depth_buffer_state = com_ptr<ID3D11DepthStencilState>();
+	device_->CreateDepthStencilState(&data, &depth_buffer_state);
+	context_->OMSetDepthStencilState(depth_buffer_state.Get(), 1u);
+}
+
+D3D11_TEXTURE2D_DESC Renderer::CreateDepthTextureData()
+{
+	auto data = D3D11_TEXTURE2D_DESC{ 0 };
+	data.Width = 1920u;
+	data.Height = 1080u;
+	data.MipLevels = 1u;
+	data.ArraySize = 1u;
+	data.Format = DXGI_FORMAT_D32_FLOAT;
+	data.SampleDesc.Count = 1u;
+	data.SampleDesc.Quality = 0u;
+	data.Usage = D3D11_USAGE_DEFAULT;
+	data.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	return data;
+}
+
+D3D11_DEPTH_STENCIL_VIEW_DESC Renderer::CreateDepthViewData()
+{
+	auto data = D3D11_DEPTH_STENCIL_VIEW_DESC{ };
+	data.Format = DXGI_FORMAT_D32_FLOAT;
+	data.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	data.Texture2D.MipSlice = 0u;
+	return data;
+}
+
+void Renderer::CreateAndSetDepthTextureAndView(D3D11_TEXTURE2D_DESC& texture, D3D11_DEPTH_STENCIL_VIEW_DESC& view)
+{
+	auto depth_stencil = com_ptr<ID3D11Texture2D>();
+	device_->CreateTexture2D(&texture, nullptr, &depth_stencil);
+
+	// create and bind view of depth texture
+	device_->CreateDepthStencilView(depth_stencil.Get(), &view, &depth_stencil_view_);
+	context_->OMSetRenderTargets(1u, render_target_.GetAddressOf(), depth_stencil_view_.Get());
 }

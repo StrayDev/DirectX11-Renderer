@@ -41,7 +41,13 @@
     <ClInclude Include="app\include\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="app\include\Renderer.h">
+    <ClInclude Include="app\include\Renderer\Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\include\Renderer\Primitives.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\include\Renderer\IRendereable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

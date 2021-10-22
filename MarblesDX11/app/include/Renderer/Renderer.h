@@ -2,6 +2,9 @@
 #include <d3d11.h>
 #include <wrl.h>
 #include <memory>
+#include <DirectXMath.h>
+
+class IRenderable;
 
 class Renderer
 {
@@ -16,7 +19,7 @@ public:
 	void CreatePrimitive();
 	void RenderPrimitive();
 
-	void DrawThickSquare(float angle, float x, float y);
+	void DrawThickSquare(IRenderable& renderable);
 	
 	void ClearBuffer(float r, float g, float b) noexcept;
 	void EndFrame();
@@ -40,8 +43,14 @@ private:
 	com_ptr<ID3D11RenderTargetView> render_target_{ nullptr };
 	com_ptr<ID3D11DepthStencilView> depth_stencil_view_{ nullptr };
 
+	//--------------------------------------
 	com_ptr<ID3DBlob> blob_{ nullptr };
 	com_ptr<ID3D11Buffer> vertex_buffer_{ nullptr };
 	com_ptr<ID3D11Buffer> index_buffer_{ nullptr };
+
+
+	// create constant buffer for transform matrix
+	//ConstantBuffer constant_buffer_{};
+	com_ptr<ID3D11Buffer> constant_buffer_ptr{ nullptr };
 
 };

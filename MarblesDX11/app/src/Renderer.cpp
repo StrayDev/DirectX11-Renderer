@@ -53,7 +53,7 @@ Renderer::Renderer(HWND w_handle)
 	//auto i_buffer = com_ptr<ID3D11Buffer>();
 
 	auto i_data = D3D11_BUFFER_DESC{ 0 };
-	i_data.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	i_data.BindFlags = D3D11_BIND_INDEX_BUFFER;	
 	i_data.ByteWidth = sizeof(Cube::Indices);
 	i_data.CPUAccessFlags = 0u;
 	i_data.MiscFlags = 0u;
@@ -67,48 +67,10 @@ Renderer::Renderer(HWND w_handle)
 
 	// bind index buffer to pipeline
 	context_->IASetIndexBuffer(index_buffer_.Get(), DXGI_FORMAT_R16_UINT, 0u);
-}
 
-void Renderer::CreatePrimitive()
-{
-}
-
-void Renderer::RenderPrimitive()
-{
-}
-
-void Renderer::DrawThickSquare(float angle, float x, float y)
-{
-
-	auto c_buffer = ConstantBuffer
-	{
-		.transform
-		{
-			DX::XMMatrixTranspose(
-				DX::XMMatrixRotationZ(angle) * 
-				DX::XMMatrixRotationX(angle) *
-				DX::XMMatrixTranslation(x, y, 4.f) * 
-				DX::XMMatrixPerspectiveLH(1.f, 9.f/16.f, 0.5f, 10.f))
-		}
-	};
-
-	auto c_buffer_ptr = com_ptr<ID3D11Buffer>();
-
-	auto cb_data = D3D11_BUFFER_DESC{ 0 };
-	cb_data.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cb_data.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb_data.Usage = D3D11_USAGE_DYNAMIC;
-	cb_data.ByteWidth = sizeof(c_buffer);
-	cb_data.StructureByteStride = 0u;
-	cb_data.MiscFlags = 0u;
-
-	auto cb_sub_data = D3D11_SUBRESOURCE_DATA{ .pSysMem = &c_buffer };
-
-	device_->CreateBuffer(&cb_data, &cb_sub_data, c_buffer_ptr.GetAddressOf() );
-
-	// bind constant buffer to vertex shader
-	context_->VSSetConstantBuffers(0u, 1u, c_buffer_ptr.GetAddressOf());
-
+	// --------------cut and past tech-----------------
+    // 
+    
 	// new constant buffer for solid colour faces
 	struct ConstantBuffer2
 	{
@@ -118,7 +80,7 @@ void Renderer::DrawThickSquare(float angle, float x, float y)
 			float g;
 			float b;
 			float a;
-		} 
+		}
 		face_colours[6];
 	};
 
@@ -150,7 +112,7 @@ void Renderer::DrawThickSquare(float angle, float x, float y)
 	// bind constant buffer 2 to vertex shader
 	context_->PSSetConstantBuffers(0u, 1u, c2_buffer_ptr.GetAddressOf());
 
-
+	//-------------------------------------------------
 	// create pixel shader
 	auto pixel_shader = com_ptr<ID3D11PixelShader>();
 	D3DReadFileToBlob(L"PixelShader.cso", &blob_);
@@ -161,12 +123,13 @@ void Renderer::DrawThickSquare(float angle, float x, float y)
 
 	// create vertex shader
 	auto vertex_shader = com_ptr<ID3D11VertexShader>();
-	D3DReadFileToBlob( L"VertexShader.cso", &blob_ );
-	device_->CreateVertexShader( blob_->GetBufferPointer(), blob_->GetBufferSize(), nullptr, &vertex_shader);
+	D3DReadFileToBlob(L"VertexShader.cso", &blob_);
+	device_->CreateVertexShader(blob_->GetBufferPointer(), blob_->GetBufferSize(), nullptr, &vertex_shader);
 
 	// bind vertex shader to pipeline
-	context_->VSSetShader( vertex_shader.Get(), 0, 0 );
+	context_->VSSetShader(vertex_shader.Get(), 0, 0);
 
+	//-----------------------------------------------------
 	// set input vertex layout
 	auto input_layout = com_ptr<ID3D11InputLayout>();
 	const D3D11_INPUT_ELEMENT_DESC input_data[] =
@@ -196,6 +159,19 @@ void Renderer::DrawThickSquare(float angle, float x, float y)
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 	context_->RSSetViewports(1u, &vp);
+
+}
+
+
+void Renderer::DrawThickSquare(IRenderable& renderable)
+{
+	//constant_buffer_.transform =
+	auto& transform = renderable.GetWorldTransform();
+	auto& cb_data = renderable.GetConstantBufferDesc();
+	auto cb_sub_data = D3D11_SUBRESOURCE_DATA{ .pSysMem = &transform };
+
+	device_->CreateBuffer(&cb_data, &cb_sub_data, constant_buffer_ptr.GetAddressOf());
+	context_->VSSetConstantBuffers(0u, 1u, constant_buffer_ptr.GetAddressOf());
 
 	// draw call
 	auto i_size = static_cast<UINT>(std::size(Cube::Indices));

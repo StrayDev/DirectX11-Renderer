@@ -42,10 +42,34 @@ int Application::Run()
 
 		renderer_->ClearBuffer(0, 0, 0); // PreRender()
 		Render();
+
 		static float b = 0;
-		renderer_->DrawThickSquare(b += 0.01, mouse_->GetX() / (1920.f/2) -1.f, -mouse_->GetY() / (1080.f/2) + 1.f);       // testing
-		renderer_->DrawThickSquare(-b, mouse_->GetX() / (1920.f / 2) - 1.f, -mouse_->GetY() / (1080.f / 2) + 1.f);       // testing
-		renderer_->EndFrame(); 		     // PostRender()
+		auto x = mouse_->GetX() / (1920.f / 2) - 1.f;
+		auto y = -mouse_->GetY() / (1080.f / 2) + 1.f;
+
+		prim.GetWorldTransform() =
+		{
+			DirectX::XMMatrixTranspose(
+			DirectX::XMMatrixRotationZ(b += 0.01) *
+			DirectX::XMMatrixRotationX(b) *
+			DirectX::XMMatrixTranslation(x, y, 4.f) *
+			DirectX::XMMatrixPerspectiveLH(1.f, 9.f / 16.f, 0.5f, 10.f))
+		};
+
+		renderer_->DrawThickSquare(prim);    
+
+		prim.GetWorldTransform() =
+		{
+			DirectX::XMMatrixTranspose(
+			DirectX::XMMatrixRotationZ(-b) *
+			DirectX::XMMatrixRotationX(-b) *
+			DirectX::XMMatrixTranslation(x, y, 4.f) *
+			DirectX::XMMatrixPerspectiveLH(1.f, 9.f / 16.f, 0.5f, 10.f))
+		};
+
+		renderer_->DrawThickSquare(prim);
+													   
+		renderer_->EndFrame(); 		   
 	}
 	
 	return 0;

@@ -1,6 +1,6 @@
 #pragma once
-
-#include <DirectXMath.h>
+#include "Renderer/IRendereable.h"
+//#include <DirectXMath.h>
 
 struct Vertex
 {
@@ -18,11 +18,6 @@ enum struct Shape
 	Plane, Cube, Sphere
 };
 
-// create constant buffer for transform matrix
-struct ConstantBuffer
-{
-	DirectX::XMMATRIX transform;
-};
 
 namespace Cube
 {
@@ -54,6 +49,33 @@ namespace Cube
 		0,1,4,
 		1,5,4
 	};
+
 }
+
+class Primitive : public IRenderable
+{
+public:
+	Primitive() 
+	{
+		c_buffer_desc = D3D11_BUFFER_DESC
+		{
+			.ByteWidth = sizeof(transform),
+			.Usage = D3D11_USAGE_DYNAMIC,
+			.BindFlags = D3D11_BIND_CONSTANT_BUFFER,
+			.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE,
+			.MiscFlags = 0u,
+			.StructureByteStride = 0u
+		};
+	};
+	virtual ~Primitive() = default;
+	Matrix& GetWorldTransform() override { return transform; }
+
+
+private:
+	const D3D11_BUFFER_DESC& GetConstantBufferDesc() override { return c_buffer_desc; }
+
+	D3D11_BUFFER_DESC c_buffer_desc;
+	Matrix transform { } ;
+};
 
 

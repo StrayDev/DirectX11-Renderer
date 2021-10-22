@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="app\include\Renderer\Primitives.cpp" />
     <ClCompile Include="app\src\Application.cpp" />
     <ClCompile Include="app\src\Renderer.cpp" />
     <ClCompile Include="app\src\Window.cpp" />

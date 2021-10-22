@@ -4,6 +4,9 @@
 #include "Renderer/Renderer.h"
 #include "input.h"
 
+//no
+#include <Renderer/Primitives.h>
+
 
 class Application 
 {
@@ -42,5 +45,8 @@ private:
 
 	// values
 	bool is_running{ true };
+
+	Primitive prim{};
+
 
 };

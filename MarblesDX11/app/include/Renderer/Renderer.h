@@ -5,12 +5,14 @@
 #include <vector>
 #include <DirectXMath.h>
 
-class Renderable;
+class IRenderable;
 struct Vertex;
 
 class Renderer
 {
-	// alias for raii specific to COM objects
+	friend class IBindable;
+	//friend class IRenderable;
+
 	template<typename T>
 	using com_ptr = Microsoft::WRL::ComPtr<T>;
 
@@ -18,13 +20,10 @@ public:
 	Renderer(HWND w_handle);
 	~Renderer() = default;
 
-	void Render(Renderable& renderable);
+	void Render(IRenderable& renderable);
 	
 	void ClearBuffer(float r, float g, float b) noexcept;
 	void EndFrame();
-
-	ID3D11Device& GetDevice() { return *device_.Get(); }
-	ID3D11DeviceContext& GetContext() { return *context_.Get(); }
 
 private:
 	DXGI_SWAP_CHAIN_DESC CreateSwapChainDescription(HWND w_handle);
@@ -37,7 +36,14 @@ private:
 	D3D11_DEPTH_STENCIL_VIEW_DESC CreateDepthViewData();
 	void CreateAndSetDepthTextureAndView(D3D11_TEXTURE2D_DESC& texture, D3D11_DEPTH_STENCIL_VIEW_DESC& view);
 
+	ID3D11Device& GetDevice() { return *device_.Get(); }
+	ID3D11DeviceContext& GetContext() { return *context_.Get(); }
+
+	DirectX::XMMATRIX& GetViewMatrix();
+
 	size_t AssignVertexBuffer(const std::vector<Vertex>& verticies);
+	size_t AssignIndexBuffer(const std::vector<unsigned short>& indicies);
+	size_t AssignPixelConstantBuffer();
 
 private:
 	com_ptr<ID3D11Device> device_{ nullptr };

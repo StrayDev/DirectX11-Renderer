@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Renderer/IRendereable.h" /// nooooooooooooooooooooooooo
 
 Application::Application()
 {
@@ -26,6 +27,9 @@ void Application::Init()
 
 int Application::Run()
 {
+	// not perm pls no 
+	auto prim = IRenderable();
+
 	while (is_running)
 	{
 		// process messages
@@ -47,6 +51,7 @@ int Application::Run()
 		auto x = mouse_->GetX() / (1920.f / 2) - 1.f;
 		auto y = -mouse_->GetY() / (1080.f / 2) + 1.f;
 
+		//auto prim = Primitive::MakeUnique(Primitives::Cube);
 		prim.GetTransform() =
 		{
 			DirectX::XMMatrixTranspose(
@@ -58,17 +63,6 @@ int Application::Run()
 
 		renderer_->Render(prim);
 
-		prim.GetTransform() =
-		{
-			DirectX::XMMatrixTranspose(
-			DirectX::XMMatrixRotationZ(-b) *
-			DirectX::XMMatrixRotationX(-b) *
-			DirectX::XMMatrixTranslation(x, y, 4.f) *
-			DirectX::XMMatrixPerspectiveLH(1.f, 9.f / 16.f, 0.5f, 10.f))
-		};
-
-		renderer_->Render(prim);
-													   
 		renderer_->EndFrame(); 		   
 	}
 	

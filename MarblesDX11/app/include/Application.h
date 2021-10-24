@@ -4,15 +4,10 @@
 #include "Renderer/Renderer.h"
 #include "input.h"
 
-//no
-#include <Renderer/Primitives.h>
-
-
 class Application 
 {
 	using Keyboard = Input::Keyboard;
 	using Mouse = Input::Mouse;
-
 
 public:
 	friend int main();
@@ -45,8 +40,5 @@ private:
 
 	// values
 	bool is_running{ true };
-
-	Renderable prim{ };
-
 
 };

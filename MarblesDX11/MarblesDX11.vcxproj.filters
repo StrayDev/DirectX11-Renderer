@@ -24,10 +24,16 @@
     <ClCompile Include="app\src\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="app\src\Renderer.cpp">
+    <ClCompile Include="app\src\Render\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="app\include\Renderer\Primitives.cpp">
+    <ClCompile Include="app\src\Render\Pipeline\VertexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\src\Render\Pipeline\IndexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\src\Render\Pipeline\ConstantBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,16 +56,22 @@
     <ClInclude Include="app\include\Renderer\Primitives.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="app\include\Renderer\Rendereable.h">
+    <ClInclude Include="app\include\Renderer\IRendereable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="app\include\Renderer\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="app\include\Renderer\Buffers\Buffer.h">
+    <ClInclude Include="app\include\Renderer\Pipeline\IBindable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="app\include\Renderer\Buffers\VertexBuffer.h">
+    <ClInclude Include="app\include\Renderer\Pipeline\VertexBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\include\Renderer\Pipeline\IndexBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\include\Renderer\Pipeline\ConstantBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,0 +1,50 @@
+#include "Renderer\Pipeline\ConstantBuffer.h"
+
+ConstantBuffer::ConstantBuffer(Renderer& renderer, size_t type_size, void* v_ptr)
+{
+	auto data = D3D11_BUFFER_DESC
+	{
+		.ByteWidth = type_size,
+		.Usage = D3D11_USAGE_DYNAMIC,
+		.BindFlags = D3D11_BIND_CONSTANT_BUFFER,
+		.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE,
+		.MiscFlags = 0u,
+		.StructureByteStride = 0u
+	};
+	auto sub_data = D3D11_SUBRESOURCE_DATA{ .pSysMem = v_ptr };
+
+	GetDevice(renderer).CreateBuffer(&data, &sub_data, buffer.GetAddressOf());
+}
+
+void ConstantBuffer::Update(Renderer& renderer, size_t type_size, void* v_ptr)
+{
+	// map the subresource
+	auto msr = D3D11_MAPPED_SUBRESOURCE{ 0 };
+	GetContext(renderer).Map(buffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msr);
+	memcpy(msr.pData, v_ptr, type_size);
+	GetContext(renderer).Unmap(buffer.Get(), 0u);
+}
+
+// vertex 
+void VertexConstantBuffer::BindToPipeline(Renderer& renderer)
+{
+	GetContext(renderer).VSSetConstantBuffers(0u, 1u, buffer.GetAddressOf());
+}
+
+// pixel 
+void PixelConstantBuffer::BindToPipeline(Renderer& renderer)
+{
+	GetContext(renderer).PSSetConstantBuffers(0u, 1u, buffer.GetAddressOf());
+}
+
+// transform
+TransformConstantBuffer::TransformConstantBuffer(Renderer& renderer, Matrix& trans)
+	: transform(trans), 
+	v_buffer(VertexConstantBuffer(renderer, sizeof(Matrix), static_cast<void*>(&trans)))
+{}
+
+void TransformConstantBuffer::BindToPipeline(Renderer& renderer)
+{
+	transform = DirectX::XMMatrixTranspose(transform); //* renderer.GetProjection());
+	v_buffer.Update( renderer, sizeof(Matrix), static_cast<void*>(&transform));
+}

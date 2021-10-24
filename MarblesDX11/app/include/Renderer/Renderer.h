@@ -16,10 +16,9 @@ public:
 	Renderer(HWND w_handle);
 	~Renderer() = default;
 
-	void CreatePrimitive();
-	void RenderPrimitive();
+	std::unique_ptr<IRenderable>& CreatePrimitive();
 
-	void DrawThickSquare(IRenderable& renderable);
+	void Render(IRenderable& renderable);
 	
 	void ClearBuffer(float r, float g, float b) noexcept;
 	void EndFrame();
@@ -47,10 +46,6 @@ private:
 	com_ptr<ID3DBlob> blob_{ nullptr };
 	com_ptr<ID3D11Buffer> vertex_buffer_{ nullptr };
 	com_ptr<ID3D11Buffer> index_buffer_{ nullptr };
-
-
-	// create constant buffer for transform matrix
-	//ConstantBuffer constant_buffer_{};
 	com_ptr<ID3D11Buffer> constant_buffer_ptr{ nullptr };
 
 };

@@ -56,7 +56,7 @@ int Application::Run()
 			DirectX::XMMatrixPerspectiveLH(1.f, 9.f / 16.f, 0.5f, 10.f))
 		};
 
-		renderer_->DrawThickSquare(prim);    
+		renderer_->Render(prim);
 
 		prim.GetWorldTransform() =
 		{
@@ -67,7 +67,7 @@ int Application::Run()
 			DirectX::XMMatrixPerspectiveLH(1.f, 9.f / 16.f, 0.5f, 10.f))
 		};
 
-		renderer_->DrawThickSquare(prim);
+		renderer_->Render(prim);
 													   
 		renderer_->EndFrame(); 		   
 	}

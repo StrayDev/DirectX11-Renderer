@@ -160,6 +160,7 @@
     <ClInclude Include="app\include\Renderer\IRendereable.h" />
     <ClInclude Include="app\include\Renderer\Primitives.h" />
     <ClInclude Include="app\include\Renderer\Renderer.h" />
+    <ClInclude Include="app\include\Renderer\Vertex.h" />
     <ClInclude Include="app\include\Window.h" />
   </ItemGroup>
   <ItemGroup>

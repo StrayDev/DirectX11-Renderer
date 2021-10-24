@@ -1,5 +1,6 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/Primitives.h"
+#include "Renderer/Vertex.h"
 
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
@@ -160,18 +161,37 @@ Renderer::Renderer(HWND w_handle)
 	vp.TopLeftY = 0;
 	context_->RSSetViewports(1u, &vp);
 
+	////////////////////////
+
 }
 
 
-void Renderer::DrawThickSquare(IRenderable& renderable)
+std::unique_ptr<IRenderable>& Renderer::CreatePrimitive()
 {
-	//constant_buffer_.transform =
+
+}
+
+void Renderer::Render(IRenderable& renderable)
+{
 	auto& transform = renderable.GetWorldTransform();
-	auto& cb_data = renderable.GetConstantBufferDesc();
+	auto cb_data = D3D11_BUFFER_DESC
+	{
+		.ByteWidth = sizeof(DX::XMMATRIX),
+		.Usage = D3D11_USAGE_DYNAMIC,
+		.BindFlags = D3D11_BIND_CONSTANT_BUFFER,
+		.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE,
+		.MiscFlags = 0u,
+		.StructureByteStride = 0u
+	};
 	auto cb_sub_data = D3D11_SUBRESOURCE_DATA{ .pSysMem = &transform };
 
 	device_->CreateBuffer(&cb_data, &cb_sub_data, constant_buffer_ptr.GetAddressOf());
 	context_->VSSetConstantBuffers(0u, 1u, constant_buffer_ptr.GetAddressOf());
+
+	////// map the subresource
+	//auto msr = D3D11_MAPPED_SUBRESOURCE{ 0 };
+	//context_->Map(constant_buffer_ptr.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msr);
+	//context_->Unmap(constant_buffer_ptr.Get(), 0u);
 
 	// draw call
 	auto i_size = static_cast<UINT>(std::size(Cube::Indices));

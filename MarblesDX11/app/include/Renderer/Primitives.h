@@ -1,18 +1,59 @@
 #pragma once
-#include "Renderer/IRendereable.h"
+#include "Renderer/Rendereable.h"
+#include "Renderer/Renderer.h"
 #include "Renderer/Vertex.h"
-//#include <DirectXMath.h>
 
-enum struct Shape
+enum struct Primitives
 {
 	Plane, Cube, Sphere
 };
 
+namespace Primitive
+{
+
+
+	static std::unique_ptr<Renderable> MakeUnique(Renderer& renderer, Primitives shape)
+	{
+		switch (shape)
+		{
+		case Primitives::Plane:
+			//return MakePlane();
+			break;
+
+		case Primitives::Cube:
+			//return MakeCube(renderer);
+			break;
+
+		case Primitives::Sphere:
+			//return MakeSphere();
+			break;
+		}
+	}
+
+	/*static std::unique_ptr<Renderable> MakeCube(Renderer& renderer)
+	{
+
+	}*/
+
+}
+
 
 namespace Cube
 {
+	//// Cube
+	//const Vertex Verticies[] = {
+	//	{  -1.f, -1.f, -1.f },
+	//	{   1.f, -1.f, -1.f },
+	//	{  -1.f,  1.f, -1.f },
+	//	{   1.f,  1.f, -1.f },
+	//	{  -1.f, -1.f,  1.f },
+	//	{   1.f, -1.f,  1.f },
+	//	{  -1.f,  1.f,  1.f },
+	//	{   1.f,  1.f,  1.f }
+	//};
+
 	// Cube
-	const Vertex Verticies[] = {
+	const std::vector<Vertex> Verticies = {
 		{  -1.f, -1.f, -1.f },
 		{   1.f, -1.f, -1.f },
 		{  -1.f,  1.f, -1.f },
@@ -42,19 +83,5 @@ namespace Cube
 
 }
 
-class Primitive : public IRenderable
-{
-public:
-	Primitive() {}
-	virtual ~Primitive() = default;
-	Matrix& GetWorldTransform() override { return transform; }
-
-
-private:
-	//const D3D11_BUFFER_DESC& GetConstantBufferDesc() override { return c_buffer_desc; }
-
-	//D3D11_BUFFER_DESC c_buffer_desc;
-	Matrix transform { } ;
-};
 
 

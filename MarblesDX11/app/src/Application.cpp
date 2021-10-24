@@ -47,7 +47,7 @@ int Application::Run()
 		auto x = mouse_->GetX() / (1920.f / 2) - 1.f;
 		auto y = -mouse_->GetY() / (1080.f / 2) + 1.f;
 
-		prim.GetWorldTransform() =
+		prim.GetTransform() =
 		{
 			DirectX::XMMatrixTranspose(
 			DirectX::XMMatrixRotationZ(b += 0.01) *
@@ -58,7 +58,7 @@ int Application::Run()
 
 		renderer_->Render(prim);
 
-		prim.GetWorldTransform() =
+		prim.GetTransform() =
 		{
 			DirectX::XMMatrixTranspose(
 			DirectX::XMMatrixRotationZ(-b) *

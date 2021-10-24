@@ -50,10 +50,16 @@
     <ClInclude Include="app\include\Renderer\Primitives.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="app\include\Renderer\IRendereable.h">
+    <ClInclude Include="app\include\Renderer\Rendereable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="app\include\Renderer\Vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\include\Renderer\Buffers\Buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\include\Renderer\Buffers\VertexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

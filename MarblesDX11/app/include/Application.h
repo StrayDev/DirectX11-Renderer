@@ -46,7 +46,7 @@ private:
 	// values
 	bool is_running{ true };
 
-	Primitive prim{};
+	Renderable prim{ };
 
 
 };

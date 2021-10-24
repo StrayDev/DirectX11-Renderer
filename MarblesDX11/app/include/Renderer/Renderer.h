@@ -2,9 +2,11 @@
 #include <d3d11.h>
 #include <wrl.h>
 #include <memory>
+#include <vector>
 #include <DirectXMath.h>
 
-class IRenderable;
+class Renderable;
+struct Vertex;
 
 class Renderer
 {
@@ -16,12 +18,13 @@ public:
 	Renderer(HWND w_handle);
 	~Renderer() = default;
 
-	std::unique_ptr<IRenderable>& CreatePrimitive();
-
-	void Render(IRenderable& renderable);
+	void Render(Renderable& renderable);
 	
 	void ClearBuffer(float r, float g, float b) noexcept;
 	void EndFrame();
+
+	ID3D11Device& GetDevice() { return *device_.Get(); }
+	ID3D11DeviceContext& GetContext() { return *context_.Get(); }
 
 private:
 	DXGI_SWAP_CHAIN_DESC CreateSwapChainDescription(HWND w_handle);
@@ -33,6 +36,8 @@ private:
 	D3D11_TEXTURE2D_DESC CreateDepthTextureData();
 	D3D11_DEPTH_STENCIL_VIEW_DESC CreateDepthViewData();
 	void CreateAndSetDepthTextureAndView(D3D11_TEXTURE2D_DESC& texture, D3D11_DEPTH_STENCIL_VIEW_DESC& view);
+
+	size_t AssignVertexBuffer(const std::vector<Vertex>& verticies);
 
 private:
 	com_ptr<ID3D11Device> device_{ nullptr };
@@ -47,5 +52,6 @@ private:
 	com_ptr<ID3D11Buffer> vertex_buffer_{ nullptr };
 	com_ptr<ID3D11Buffer> index_buffer_{ nullptr };
 	com_ptr<ID3D11Buffer> constant_buffer_ptr{ nullptr };
-
+	//--------------
+	std::vector<com_ptr<ID3D11Buffer>> vertex_buffers{ };
 };

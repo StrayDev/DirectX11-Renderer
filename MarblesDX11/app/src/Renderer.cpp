@@ -1,4 +1,5 @@
 #include "Renderer/Renderer.h"
+#include "Renderer/Rendereable.h"
 #include "Renderer/Primitives.h"
 #include "Renderer/Vertex.h"
 
@@ -30,23 +31,13 @@ Renderer::Renderer(HWND w_handle)
 	// --------------cut and past tech-----------------
 	// 
 	// create vertex buffer
-	auto v_data = D3D11_BUFFER_DESC{ 0 };
-	v_data.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	v_data.ByteWidth = sizeof(Cube::Verticies);
-	v_data.CPUAccessFlags = 0u;
-	v_data.MiscFlags = 0u;
-	v_data.StructureByteStride = sizeof(Vertex);
-	v_data.Usage = D3D11_USAGE_DEFAULT;
+	std::vector<Vertex> verts;
+	for (int i = 0; i < 8; i++)
+	{
+		verts.push_back(Cube::Verticies[i]);
+	}
 
-	auto v_sub_data = D3D11_SUBRESOURCE_DATA{ 0 };
-	v_sub_data.pSysMem = Cube::Verticies;
-
-	device_->CreateBuffer(&v_data, &v_sub_data, vertex_buffer_.GetAddressOf());
-
-	// bind vertex buffer to pipeline
-	const UINT stride = sizeof(Vertex);
-	const UINT offset = 0u;
-	context_->IASetVertexBuffers(0u, 1u, vertex_buffer_.GetAddressOf(), &stride, &offset);
+	auto vb_id = AssignVertexBuffer(Cube::Verticies);
 
 	// --------------cut and past tech-----------------
     // 
@@ -165,15 +156,9 @@ Renderer::Renderer(HWND w_handle)
 
 }
 
-
-std::unique_ptr<IRenderable>& Renderer::CreatePrimitive()
+void Renderer::Render(Renderable& renderable)
 {
-
-}
-
-void Renderer::Render(IRenderable& renderable)
-{
-	auto& transform = renderable.GetWorldTransform();
+	auto& transform = renderable.GetTransform();
 	auto cb_data = D3D11_BUFFER_DESC
 	{
 		.ByteWidth = sizeof(DX::XMMATRIX),
@@ -189,11 +174,11 @@ void Renderer::Render(IRenderable& renderable)
 	context_->VSSetConstantBuffers(0u, 1u, constant_buffer_ptr.GetAddressOf());
 
 	////// map the subresource
-	//auto msr = D3D11_MAPPED_SUBRESOURCE{ 0 };
+	//auto msr = D3D11_MAPPED_SUBRESOURCE{ .pData = &transform };
 	//context_->Map(constant_buffer_ptr.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msr);
 	//context_->Unmap(constant_buffer_ptr.Get(), 0u);
 
-	// draw call
+	// draw call // obj.GetIndexSize()
 	auto i_size = static_cast<UINT>(std::size(Cube::Indices));
 	context_->DrawIndexed(i_size, 0u, 0u);
 }
@@ -307,4 +292,27 @@ void Renderer::CreateAndSetDepthTextureAndView(D3D11_TEXTURE2D_DESC& texture, D3
 	// create and bind view of depth texture
 	device_->CreateDepthStencilView(depth_stencil.Get(), &view, &depth_stencil_view_);
 	context_->OMSetRenderTargets(1u, render_target_.GetAddressOf(), depth_stencil_view_.Get());
+}
+
+size_t Renderer::AssignVertexBuffer(const std::vector<Vertex>& verticies)
+{
+	auto v_data = D3D11_BUFFER_DESC{ 0 };
+	v_data.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	v_data.ByteWidth = sizeof(Vertex) * verticies.size();
+	v_data.CPUAccessFlags = 0u;
+	v_data.MiscFlags = 0u;
+	v_data.StructureByteStride = sizeof(Vertex);
+	v_data.Usage = D3D11_USAGE_DEFAULT;
+
+	auto v_sub_data = D3D11_SUBRESOURCE_DATA{ 0 };
+	v_sub_data.pSysMem = verticies.data();
+
+	device_->CreateBuffer(&v_data, &v_sub_data, vertex_buffer_.GetAddressOf());
+
+	// bind vertex buffer to pipeline
+	const UINT stride = sizeof(Vertex);
+	const UINT offset = 0u;
+	context_->IASetVertexBuffers(0u, 1u, vertex_buffer_.GetAddressOf(), &stride, &offset);
+
+	return 1;
 }

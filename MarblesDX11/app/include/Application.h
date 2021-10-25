@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "Window.h"
+#include "Renderer/IRendereable.h"
 #include "Renderer/Renderer.h"
 #include "input.h"
 
@@ -40,5 +41,7 @@ private:
 
 	// values
 	bool is_running{ true };
+
+	std::vector<std::unique_ptr<IRenderable>> obj_list;
 
 };

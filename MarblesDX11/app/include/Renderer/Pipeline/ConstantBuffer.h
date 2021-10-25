@@ -1,7 +1,6 @@
 #pragma once
 #include "Renderer/Pipeline/IBindable.h"
 #include <DirectXMath.h>
-#include <any>
 
 class ConstantBuffer : public IBindable
 {

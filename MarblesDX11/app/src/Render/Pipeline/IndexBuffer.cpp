@@ -1,11 +1,13 @@
 #include "Renderer/Pipeline/IndexBuffer.h"
 
-IndexBuffer::IndexBuffer(Renderer& renderer, Indicies& indicies)
-	: STRIDE(sizeof(unsigned short)), OFFSET(0u)
+IndexBuffer::IndexBuffer(Renderer& renderer, const Indicies& indicies)
+	: COUNT(static_cast<size_t>(std::size(indicies))), 
+	  STRIDE(sizeof(unsigned short)), 
+	  OFFSET(0u)
 {
 	auto data = D3D11_BUFFER_DESC
 	{
-		.ByteWidth = size_t(sizeof(unsigned short) * indicies.size()),
+		.ByteWidth = size_t(sizeof(unsigned short) * COUNT),
 		.Usage = D3D11_USAGE_DEFAULT,
 		.BindFlags = D3D11_BIND_INDEX_BUFFER,
 		.CPUAccessFlags = 0u,
@@ -25,4 +27,9 @@ void IndexBuffer::BindToPipeline(Renderer& renderer)
 {
 	GetContext(renderer).IASetIndexBuffer(buffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
 
+}
+
+size_t IndexBuffer::GetIndexCount()
+{
+	return COUNT;
 }

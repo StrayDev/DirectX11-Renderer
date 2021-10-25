@@ -1,29 +1,30 @@
 #pragma once
 #include "Renderer/Renderer.h"
+
 #include <DirectXMath.h>
 
-
-struct RenderData
-{
-	size_t index_buffer{ };
-	size_t vertex_buffer{ };
-	size_t pixel_constant_buffer{ };
-	size_t vertex_constant_buffer{ };
-}; // where this go?
+struct ID3D11Device;
+struct ID3D11DeviceContext;
 
 class IRenderable
 {
 public:
-	using Matrix = DirectX::XMMATRIX;
-
-	IRenderable() = default; // NOOOOOOOOOOOOOOOOOOOOOO
 	virtual ~IRenderable() = default;
 
-	virtual void Render() {};
+	virtual void Render(Renderer& renderer) = 0;
 
-	virtual Matrix& GetTransform() { return matrix; } // = 0;
-	DirectX::XMMATRIX matrix{};
-private:
-	//virtual std::vector<size_t> GetIndicies() {} // = 0;
-	//virtual std::vector<Vertex> GetVerticies() {} // = 0;
+	using Matrix = DirectX::XMMATRIX;
+	virtual Matrix& GetTransform() = 0;
+
+protected:
+	ID3D11Device& GetDevice(Renderer& renderer)
+	{
+		return renderer.GetDevice();
+	}
+
+	ID3D11DeviceContext& GetContext(Renderer& renderer)
+	{
+		return renderer.GetContext();
+	}
+
 };

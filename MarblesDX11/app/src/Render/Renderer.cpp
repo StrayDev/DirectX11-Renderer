@@ -1,14 +1,12 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/IRendereable.h"
-#include "Renderer/Primitives.h"
 #include "Renderer/Vertex.h"
+#include "Renderer/Pipeline/VertexBuffer.h"
+#include "Renderer/Pipeline/IndexBuffer.h"
+#include "Renderer/Pipeline/ConstantBuffer.h"
 
 #include <d3dcompiler.h>
-#include <DirectXMath.h>
-#include <cmath>
-#include <any>
 
-// adds the lib to the linker 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
@@ -29,17 +27,6 @@ Renderer::Renderer(HWND w_handle)
 	auto depth_view_data = CreateDepthViewData();
 	CreateAndSetDepthTextureAndView(depth_texture_data, depth_view_data);
 
-	//------------------------------------------------------
-	// asign vertex buffer
-	auto vbuffer_id = AssignVertexBuffer(Cube::Verticies);
-
-	// asign index buffer 
-	auto ibuffer_id = AssignIndexBuffer(Cube::Indices);
-
-	// asign pixel constant buffer
-	auto pcbuffer_id = AssignPixelConstantBuffer();
-
-	//--------------------------------------------------------
 	// create pixel shader
 	auto pixel_shader = com_ptr<ID3D11PixelShader>();
 	D3DReadFileToBlob(L"PixelShader.cso", &blob_);
@@ -87,32 +74,14 @@ Renderer::Renderer(HWND w_handle)
 	context_->RSSetViewports(1u, &vp);
 }
 
-void Renderer::Render(IRenderable& renderable)
+void Renderer::PreRender()
 {
-	auto& transform = renderable.GetTransform();
 
-	auto* my_insides = static_cast<void*>(&transform);
-	std::any any = &transform;
-	auto depth = sizeof(DX::XMMATRIX);
+}
 
-	auto cb_data = D3D11_BUFFER_DESC
-	{
-		.ByteWidth = sizeof(DX::XMMATRIX),
-		//.ByteWidth = sizeof(any),
-		.Usage = D3D11_USAGE_DYNAMIC,
-		.BindFlags = D3D11_BIND_CONSTANT_BUFFER,
-		.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE,
-		.MiscFlags = 0u,
-		.StructureByteStride = 0u
-	};
-	auto cb_sub_data = D3D11_SUBRESOURCE_DATA{ .pSysMem = my_insides };
-
-	device_->CreateBuffer(&cb_data, &cb_sub_data, constant_buffer_ptr.GetAddressOf());
-	context_->VSSetConstantBuffers(0u, 1u, constant_buffer_ptr.GetAddressOf());
-
-	// draw call // obj.GetIndexSize()
-	auto i_size = static_cast<size_t>(std::size(Cube::Indices));
-	context_->DrawIndexed(i_size, 0u, 0u);
+void Renderer::PostRender()
+{
+	EndFrame();
 }
 
 void Renderer::EndFrame()
@@ -228,6 +197,7 @@ void Renderer::CreateAndSetDepthTextureAndView(D3D11_TEXTURE2D_DESC& texture, D3
 
 DirectX::XMMATRIX& Renderer::GetViewMatrix()
 {
+	return *new DirectX::XMMATRIX;
 	// need to do did and update transform constant buffer
 }
 

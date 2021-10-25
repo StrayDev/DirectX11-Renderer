@@ -1,5 +1,8 @@
 #pragma once
-#include "Renderer/Renderer.h"
+#include <d3d11.h>
+#include <wrl.h>
+
+class Renderer;
 
 class IBindable
 {
@@ -11,6 +14,6 @@ public:
 	virtual void BindToPipeline(Renderer& renderer) = 0;
 
 protected:
-	static ID3D11Device& GetDevice(Renderer& renderer) { return renderer.GetDevice(); }
-	static ID3D11DeviceContext& GetContext(Renderer& renderer) { return renderer.GetContext(); }
+	static ID3D11Device& GetDevice(Renderer& renderer);
+	static ID3D11DeviceContext& GetContext(Renderer& renderer);
 };

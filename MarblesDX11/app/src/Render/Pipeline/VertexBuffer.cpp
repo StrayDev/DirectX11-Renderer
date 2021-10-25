@@ -1,6 +1,6 @@
 #include "Renderer/Pipeline/VertexBuffer.h"
 
-VertexBuffer::VertexBuffer(Renderer& renderer, Verticies& verticies)
+VertexBuffer::VertexBuffer(Renderer& renderer, const Verticies& verticies)
 	: STRIDE(sizeof(Vertex)), OFFSET(0u)
 {
 	auto data = D3D11_BUFFER_DESC

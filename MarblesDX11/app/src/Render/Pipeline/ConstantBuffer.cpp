@@ -45,6 +45,7 @@ TransformConstantBuffer::TransformConstantBuffer(Renderer& renderer, Matrix& tra
 
 void TransformConstantBuffer::BindToPipeline(Renderer& renderer)
 {
-	transform = DirectX::XMMatrixTranspose(transform); //* renderer.GetProjection());
+	//transform = DirectX::XMMatrixTranspose(transform); //* renderer.GetProjection());
 	v_buffer.Update( renderer, sizeof(Matrix), static_cast<void*>(&transform));
+	v_buffer.BindToPipeline(renderer);
 }

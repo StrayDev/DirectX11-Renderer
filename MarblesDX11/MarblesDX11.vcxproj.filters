@@ -36,6 +36,12 @@
     <ClCompile Include="app\src\Render\Pipeline\ConstantBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="app\src\Render\Pipeline\IBindable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\src\Render\Primitives\Primitives.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app\include\Window.h">
@@ -51,9 +57,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="app\include\Renderer\Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="app\include\Renderer\Primitives.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="app\include\Renderer\IRendereable.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="app\include\Renderer\Pipeline\ConstantBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\include\Renderer\Primitives\Primitive.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,13 +5,15 @@
 #include <vector>
 #include <DirectXMath.h>
 
+#include "Renderer/Pipeline/IBindable.h"
+
 class IRenderable;
 struct Vertex;
 
 class Renderer
 {
 	friend class IBindable;
-	//friend class IRenderable;
+	friend class IRenderable;
 
 	template<typename T>
 	using com_ptr = Microsoft::WRL::ComPtr<T>;
@@ -19,9 +21,10 @@ class Renderer
 public:
 	Renderer(HWND w_handle);
 	~Renderer() = default;
-
-	void Render(IRenderable& renderable);
 	
+	void PreRender();
+	void PostRender();
+
 	void ClearBuffer(float r, float g, float b) noexcept;
 	void EndFrame();
 
@@ -59,5 +62,5 @@ private:
 	com_ptr<ID3D11Buffer> index_buffer_{ nullptr };
 	com_ptr<ID3D11Buffer> constant_buffer_ptr{ nullptr };
 	//--------------
-	std::vector<com_ptr<ID3D11Buffer>> vertex_buffers{ };
+	std::vector<std::unique_ptr<IBindable>> vertex_buffers;
 };

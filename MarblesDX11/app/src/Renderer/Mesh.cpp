@@ -1,5 +1,8 @@
 #include "Renderer/Mesh.h"
 #include "Renderer/IRendereable.h"
+#include "Renderer/Pipeline/PixelShader.h"
+#include "Renderer/Pipeline/VertexShader.h"
+#include "Renderer/Pipeline/InputLayout.h"
 #include "Renderer/Pipeline/IBindable.h"
 #include "Renderer/Pipeline/IndexBuffer.h"
 #include "Renderer/Pipeline/VertexBuffer.h"
@@ -14,6 +17,21 @@ void Mesh::Render(Renderer& renderer)
 	}
 	size_t count = i_buffer->GetIndexCount();
 	GetContext(renderer).DrawIndexed(count, 0u, 0u);	
+}
+
+void Mesh::CreatePixelShader(Renderer& renderer)
+{
+	bind_list.emplace_back(std::make_unique<PixelShader>(renderer));
+}
+
+void Mesh::CreateVertexShader(Renderer& renderer)
+{
+	bind_list.emplace_back(std::make_unique<VertexShader>(renderer));
+}
+
+void Mesh::CreateInputLayout(Renderer& renderer)
+{
+	bind_list.emplace_back(std::make_unique<InputLayout>(renderer));
 }
 
 void Mesh::CreateVertexBuffer(Renderer& renderer, std::vector<Vertex>& vertices)

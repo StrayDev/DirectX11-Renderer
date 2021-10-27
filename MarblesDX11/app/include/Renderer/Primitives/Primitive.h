@@ -61,6 +61,9 @@ public:
 		auto size = sizeof(cb2);
 		auto v_ptr = static_cast<void*>(&cb2);
 
+		CreatePixelShader(renderer);
+		CreateVertexShader(renderer);
+		CreateInputLayout(renderer);
 		CreateIndexBuffer(renderer, indices);
 		CreateVertexBuffer(renderer, verticies);
 		CreateColourBuffer(renderer, size, v_ptr);

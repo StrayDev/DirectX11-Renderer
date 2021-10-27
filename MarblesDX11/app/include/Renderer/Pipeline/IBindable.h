@@ -14,6 +14,7 @@ public:
 	virtual void BindToPipeline(Renderer& renderer) = 0;
 
 protected:
+	static Microsoft::WRL::ComPtr<ID3DBlob>& GetBlob(Renderer& renderer);
 	static ID3D11Device& GetDevice(Renderer& renderer);
 	static ID3D11DeviceContext& GetContext(Renderer& renderer);
 };

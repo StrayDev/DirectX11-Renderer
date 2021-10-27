@@ -1,4 +1,5 @@
 #include "Renderer\Pipeline\ConstantBuffer.h"
+#include "Renderer/Renderer.h"
 
 ConstantBuffer::ConstantBuffer(Renderer& renderer, size_t type_size, void* v_ptr)
 {
@@ -45,11 +46,10 @@ TransformConstantBuffer::TransformConstantBuffer(Renderer& renderer, Matrix& tra
 
 void TransformConstantBuffer::BindToPipeline(Renderer& renderer)
 {
-	auto t = DirectX::XMMatrixTranspose( transform * DirectX::XMMatrixPerspectiveLH(1.f, 9.f / 16.f, 0.5f, 10.f));
+	auto t = DirectX::XMMatrixTranspose( transform * renderer.GetViewMatrix());
 	v_buffer.Update(renderer, sizeof(DirectX::XMMATRIX), static_cast<void*>(&t));
 	v_buffer.BindToPipeline(renderer);
 }
-
 
 
 

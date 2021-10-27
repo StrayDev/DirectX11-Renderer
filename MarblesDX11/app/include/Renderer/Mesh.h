@@ -16,6 +16,9 @@ public:
 	void SetTransform(Matrix matrix) { transform = matrix; }
 
 protected:
+	void CreatePixelShader(Renderer& renderer);
+	void CreateVertexShader(Renderer& renderer);
+	void CreateInputLayout(Renderer& renderer);
 	void CreateVertexBuffer(Renderer& renderer, std::vector<Vertex>& vertices);
 	void CreateIndexBuffer(Renderer& renderer, std::vector<unsigned short>& indices);
 	void CreateColourBuffer(Renderer& renderer, size_t size, void* v_ptr);

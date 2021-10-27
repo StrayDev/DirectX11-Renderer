@@ -18,14 +18,7 @@ public:
 	virtual void SetTransform(Matrix matrix) = 0;
 
 protected:
-	ID3D11Device& GetDevice(Renderer& renderer)
-	{
-		return renderer.GetDevice();
-	}
-
-	ID3D11DeviceContext& GetContext(Renderer& renderer)
-	{
-		return renderer.GetContext();
-	}
+	ID3D11Device& GetDevice(Renderer& renderer)	{ return renderer.GetDevice(); }
+	ID3D11DeviceContext& GetContext(Renderer& renderer) { return renderer.GetContext(); }
 
 };

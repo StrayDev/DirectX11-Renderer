@@ -147,10 +147,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="app\src\Renderer\Pipeline\IBindable.cpp" />
+    <ClCompile Include="app\src\Renderer\Pipeline\InputLayout.cpp" />
     <ClCompile Include="app\src\Renderer\Mesh.cpp" />
     <ClCompile Include="app\src\Application.cpp" />
     <ClCompile Include="app\src\Renderer\Pipeline\ConstantBuffer.cpp" />
-    <ClCompile Include="app\src\Renderer\Pipeline\IBindable.cpp" />
+    <ClCompile Include="app\src\Renderer\Pipeline\PixelShader.cpp" />
+    <ClCompile Include="app\src\Renderer\Pipeline\VertexShader.cpp" />
     <ClCompile Include="app\src\Renderer\Primitives\Primitives.cpp" />
     <ClCompile Include="app\src\Renderer\Renderer.cpp" />
     <ClCompile Include="app\src\Renderer\Pipeline\IndexBuffer.cpp" />
@@ -164,10 +167,13 @@
     <ClInclude Include="app\include\Input.h" />
     <ClInclude Include="app\include\Renderer\Mesh.h" />
     <ClInclude Include="app\include\Renderer\Pipeline\ConstantBuffer.h" />
+    <ClInclude Include="app\include\Renderer\Pipeline\InputLayout.h" />
+    <ClInclude Include="app\include\Renderer\Pipeline\PixelShader.h" />
     <ClInclude Include="app\include\Renderer\Pipeline\IBindable.h" />
     <ClInclude Include="app\include\Renderer\Pipeline\IndexBuffer.h" />
     <ClInclude Include="app\include\Renderer\Pipeline\VertexBuffer.h" />
     <ClInclude Include="app\include\Renderer\IRendereable.h" />
+    <ClInclude Include="app\include\Renderer\Pipeline\VertexShader.h" />
     <ClInclude Include="app\include\Renderer\Primitives\Primitive.h" />
     <ClInclude Include="app\include\Renderer\Renderer.h" />
     <ClInclude Include="app\include\Renderer\Vertex.h" />

@@ -1,9 +1,6 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/IRendereable.h"
 #include "Renderer/Vertex.h"
-#include "Renderer/Pipeline/VertexBuffer.h"
-#include "Renderer/Pipeline/IndexBuffer.h"
-#include "Renderer/Pipeline/ConstantBuffer.h"
 
 #include <d3dcompiler.h>
 
@@ -14,6 +11,10 @@ namespace DX = DirectX;
 
 Renderer::Renderer(HWND w_handle)
 {
+	// Set default camera view
+	// this will be replaced with a camera
+	ViewMatrix = DirectX::XMMatrixPerspectiveLH(1.f, 9.f / 16.f, 0.3f, 10.f);
+
 	// create the swap chain
 	auto swap_chain_data = CreateSwapChainDescription(w_handle);
 	CreateDeviceAndSwapChain(swap_chain_data);
@@ -26,42 +27,6 @@ Renderer::Renderer(HWND w_handle)
 	auto depth_texture_data = CreateDepthTextureData();
 	auto depth_view_data = CreateDepthViewData();
 	CreateAndSetDepthTextureAndView(depth_texture_data, depth_view_data);
-
-	// create pixel shader
-	auto pixel_shader = com_ptr<ID3D11PixelShader>();
-	D3DReadFileToBlob(L"PixelShader.cso", &blob_);
-	device_->CreatePixelShader(blob_->GetBufferPointer(), blob_->GetBufferSize(), nullptr, &pixel_shader);
-
-	// bind pixel shader to pipeline
-	context_->PSSetShader(pixel_shader.Get(), 0, 0);
-
-	// create vertex shader
-	auto vertex_shader = com_ptr<ID3D11VertexShader>();
-	D3DReadFileToBlob(L"VertexShader.cso", &blob_);
-	device_->CreateVertexShader(blob_->GetBufferPointer(), blob_->GetBufferSize(), nullptr, &vertex_shader);
-
-	// bind vertex shader to pipeline
-	context_->VSSetShader(vertex_shader.Get(), 0, 0);
-
-	// set input vertex layout
-	auto input_layout = com_ptr<ID3D11InputLayout>();
-	const D3D11_INPUT_ELEMENT_DESC input_data[] =
-	{
-		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-	device_->CreateInputLayout(
-		input_data,
-		static_cast<UINT>(std::size(input_data)),
-		blob_->GetBufferPointer(),
-		blob_->GetBufferSize(),
-		&input_layout
-	);
-
-	// bind vertex layout
-	context_->IASetInputLayout(input_layout.Get());
-
-	// set the primitive type
-	context_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// set up viewport
 	auto vp = D3D11_VIEWPORT{ 0 };
@@ -76,7 +41,7 @@ Renderer::Renderer(HWND w_handle)
 
 void Renderer::PreRender()
 {
-
+	ClearBuffer(0, 0, 0);
 }
 
 void Renderer::PostRender()
@@ -197,104 +162,5 @@ void Renderer::CreateAndSetDepthTextureAndView(D3D11_TEXTURE2D_DESC& texture, D3
 
 DirectX::XMMATRIX& Renderer::GetViewMatrix()
 {
-	return *new DirectX::XMMATRIX;
-	// need to do did and update transform constant buffer
-}
-
-size_t Renderer::AssignVertexBuffer(const std::vector<Vertex>& verticies)
-{
-	auto v_data = D3D11_BUFFER_DESC
-	{ 
-		.ByteWidth = sizeof(Vertex) * verticies.size(),
-		.Usage = D3D11_USAGE_DEFAULT,
-		.BindFlags = D3D11_BIND_VERTEX_BUFFER,
-		.CPUAccessFlags = 0u,
-		.MiscFlags = 0u,
-		.StructureByteStride = sizeof(Vertex)
-	};
-
-	auto v_sub_data = D3D11_SUBRESOURCE_DATA
-	{ 
-		.pSysMem = verticies.data() 
-	};
-	
-	device_->CreateBuffer(&v_data, &v_sub_data, vertex_buffer_.GetAddressOf());
-
-	// bind vertex buffer to pipeline
-	const UINT stride = sizeof(Vertex);
-	const UINT offset = 0u;
-	context_->IASetVertexBuffers(0u, 1u, vertex_buffer_.GetAddressOf(), &stride, &offset);
-
-	return 1u;
-}
-
-size_t Renderer::AssignIndexBuffer(const std::vector<unsigned short>& indicies)
-{
-	auto i_data = D3D11_BUFFER_DESC
-	{
-		.ByteWidth = size_t(sizeof(unsigned short) * indicies.size()),
-		.Usage = D3D11_USAGE_DEFAULT,
-		.BindFlags = D3D11_BIND_INDEX_BUFFER,
-		.CPUAccessFlags = 0u,
-		.MiscFlags = 0u,
-		.StructureByteStride = sizeof(unsigned short),
-	};
-
-	auto i_sub_data = D3D11_SUBRESOURCE_DATA
-	{ 
-		.pSysMem = indicies.data() 
-	};
-
-	device_->CreateBuffer(&i_data, &i_sub_data, index_buffer_.GetAddressOf());
-
-	// bind index buffer to pipeline
-	context_->IASetIndexBuffer(index_buffer_.Get(), DXGI_FORMAT_R16_UINT, 0u);
-
-	return 1u;
-}
-
-size_t Renderer::AssignPixelConstantBuffer()
-{
-
-	struct ConstantBuffer2
-	{
-		struct
-		{
-			float r; 
-			float g;
-			float b;
-			float a;
-		}
-		face_colours[6];
-	};
-
-	const ConstantBuffer2 cb2 =
-	{
-		{
-			{ 1.f, 0.f, 0.f },
-			{ 0.f, 1.f, 0.f },
-			{ 0.f, 0.f, 1.f },
-			{ 1.f, 1.f, 0.f },
-			{ 1.f, 0.f, 1.f },
-			{ 0.f, 1.f, 1.f }
-		}
-	};
-
-	auto c2_buffer_ptr = com_ptr<ID3D11Buffer>();
-	auto cb2_data = D3D11_BUFFER_DESC();
-	cb2_data.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb2_data.Usage = D3D11_USAGE_DEFAULT;
-	cb2_data.CPUAccessFlags = 0u;
-	cb2_data.MiscFlags = 0u;
-	cb2_data.ByteWidth = sizeof(cb2);
-	cb2_data.StructureByteStride = 0u;
-	auto cb2_sub_data = D3D11_SUBRESOURCE_DATA();
-	cb2_sub_data.pSysMem = &cb2;
-
-	device_->CreateBuffer(&cb2_data, &cb2_sub_data, c2_buffer_ptr.GetAddressOf());
-
-	// bind constant buffer 2 to vertex shader
-	context_->PSSetConstantBuffers(0u, 1u, c2_buffer_ptr.GetAddressOf());
-
-	return 1;
+	return ViewMatrix;
 }

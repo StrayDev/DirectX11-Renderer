@@ -147,13 +147,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="app\src\Renderer\Mesh.cpp" />
     <ClCompile Include="app\src\Application.cpp" />
-    <ClCompile Include="app\src\Render\Pipeline\ConstantBuffer.cpp" />
-    <ClCompile Include="app\src\Render\Pipeline\IBindable.cpp" />
-    <ClCompile Include="app\src\Render\Primitives\Primitives.cpp" />
-    <ClCompile Include="app\src\Render\Renderer.cpp" />
-    <ClCompile Include="app\src\Render\Pipeline\IndexBuffer.cpp" />
-    <ClCompile Include="app\src\Render\Pipeline\VertexBuffer.cpp" />
+    <ClCompile Include="app\src\Renderer\Pipeline\ConstantBuffer.cpp" />
+    <ClCompile Include="app\src\Renderer\Pipeline\IBindable.cpp" />
+    <ClCompile Include="app\src\Renderer\Primitives\Primitives.cpp" />
+    <ClCompile Include="app\src\Renderer\Renderer.cpp" />
+    <ClCompile Include="app\src\Renderer\Pipeline\IndexBuffer.cpp" />
+    <ClCompile Include="app\src\Renderer\Pipeline\VertexBuffer.cpp" />
     <ClCompile Include="app\src\Window.cpp" />
     <ClCompile Include="app\main.cpp" />
   </ItemGroup>
@@ -161,6 +162,7 @@
     <ClInclude Include="app\include\Application.h" />
     <ClInclude Include="app\include\Event.h" />
     <ClInclude Include="app\include\Input.h" />
+    <ClInclude Include="app\include\Renderer\Mesh.h" />
     <ClInclude Include="app\include\Renderer\Pipeline\ConstantBuffer.h" />
     <ClInclude Include="app\include\Renderer\Pipeline\IBindable.h" />
     <ClInclude Include="app\include\Renderer\Pipeline\IndexBuffer.h" />

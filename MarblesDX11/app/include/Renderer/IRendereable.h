@@ -15,6 +15,7 @@ public:
 
 	using Matrix = DirectX::XMMATRIX;
 	virtual Matrix& GetTransform() = 0;
+	virtual void SetTransform(Matrix matrix) = 0;
 
 protected:
 	ID3D11Device& GetDevice(Renderer& renderer)

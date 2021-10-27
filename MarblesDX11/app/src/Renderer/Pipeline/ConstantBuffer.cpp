@@ -19,7 +19,7 @@ ConstantBuffer::ConstantBuffer(Renderer& renderer, size_t type_size, void* v_ptr
 void ConstantBuffer::Update(Renderer& renderer, size_t type_size, void* v_ptr)
 {
 	// map the subresource
-	auto msr = D3D11_MAPPED_SUBRESOURCE{ 0 };
+	auto msr = D3D11_MAPPED_SUBRESOURCE{ };
 	GetContext(renderer).Map(buffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msr);
 	memcpy(msr.pData, v_ptr, type_size);
 	GetContext(renderer).Unmap(buffer.Get(), 0u);
@@ -45,7 +45,11 @@ TransformConstantBuffer::TransformConstantBuffer(Renderer& renderer, Matrix& tra
 
 void TransformConstantBuffer::BindToPipeline(Renderer& renderer)
 {
-	//transform = DirectX::XMMatrixTranspose(transform); //* renderer.GetProjection());
-	v_buffer.Update( renderer, sizeof(Matrix), static_cast<void*>(&transform));
+	auto t = DirectX::XMMatrixTranspose( transform * DirectX::XMMatrixPerspectiveLH(1.f, 9.f / 16.f, 0.5f, 10.f));
+	v_buffer.Update(renderer, sizeof(DirectX::XMMATRIX), static_cast<void*>(&t));
 	v_buffer.BindToPipeline(renderer);
 }
+
+
+
+

@@ -24,22 +24,25 @@
     <ClCompile Include="app\src\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="app\src\Render\Renderer.cpp">
+    <ClCompile Include="app\src\Renderer\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="app\src\Render\Pipeline\VertexBuffer.cpp">
+    <ClCompile Include="app\src\Renderer\Pipeline\VertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="app\src\Render\Pipeline\IndexBuffer.cpp">
+    <ClCompile Include="app\src\Renderer\Pipeline\IndexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="app\src\Render\Pipeline\ConstantBuffer.cpp">
+    <ClCompile Include="app\src\Renderer\Pipeline\ConstantBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="app\src\Render\Pipeline\IBindable.cpp">
+    <ClCompile Include="app\src\Renderer\Pipeline\IBindable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="app\src\Render\Primitives\Primitives.cpp">
+    <ClCompile Include="app\src\Renderer\Primitives\Primitives.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\src\Renderer\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="app\include\Renderer\Primitives\Primitive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\include\Renderer\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,6 +6,7 @@
 #include "Renderer/Pipeline/VertexBuffer.h"
 #include "Renderer/Pipeline/ConstantBuffer.h"
 #include <d3d11.h>
+#include "Renderer/Mesh.h"
 
 class Renderer;
 
@@ -14,34 +15,21 @@ enum struct Shapes
 	cube
 };
 
+class Cube;
+
 namespace Primitive
 {
-	static std::unique_ptr<IRenderable> MakeUnique(Renderer& renderer, Shapes shape)
+	template<typename T>
+	static std::unique_ptr<T> MakeUnique(Renderer& renderer)
 	{
-		switch (shape)
-		{
-			case Shapes::cube:
-				//return std::make_unique<Cube>(renderer);
-				break;
-		}
+		return std::make_unique<T>(renderer);
 	}
 }
 
-class Shape : public IRenderable
-{
-public:
-
-
-private:
-
-
-};
-
-class Cube : public IRenderable
+class Cube : public Mesh
 {
 public:
 	Cube(Renderer& renderer)
-		: transform(DirectX::XMMATRIX())
 	{
 		std::vector<Vertex> verticies = { 
 			{  -1.f, -1.f, -1.f },{   1.f, -1.f, -1.f },
@@ -54,47 +42,31 @@ public:
 			0,2,1, 2,3,1, 1,3,5, 3,7,5, 2,6,3, 3,6,7, 
 			4,5,7, 4,7,6, 0,4,2, 2,4,6, 0,1,4, 1,5,4
 		};
-		bind_list.emplace_back(std::make_unique<VertexBuffer>(renderer, verticies));
 
-		bind_list.emplace_back(std::make_unique<IndexBuffer>(renderer, indices));
-		i_buffer = static_cast<IndexBuffer*>(bind_list.back().get());
-
-		struct ConstantBuffer2	{
+		struct ConstantBuffer2	
+		{
 			struct
 			{
 				float r; float g; float b; float a;
 			} 
-			face_colours[6]; };
+			face_colours[6]; 
+		};
 
-		ConstantBuffer2 cb2 = {{
+		ConstantBuffer2 cb2 = 
+		{{
 			{ 1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f }, { 0.f, 0.f, 1.f },
-			{ 1.f, 1.f, 0.f }, { 1.f, 0.f, 1.f }, { 0.f, 1.f, 1.f } }};
+			{ 1.f, 1.f, 0.f }, { 1.f, 0.f, 1.f }, { 0.f, 1.f, 1.f } 
+		}};
 
-		auto p_size = sizeof(cb2);
-		auto pv_ptr = static_cast<void*>(&cb2);
-		bind_list.emplace_back(std::make_unique<PixelConstantBuffer>(renderer, p_size, pv_ptr));
+		auto size = sizeof(cb2);
+		auto v_ptr = static_cast<void*>(&cb2);
 
-		bind_list.emplace_back(std::make_unique<TransformConstantBuffer>(renderer, transform));
+		CreateIndexBuffer(renderer, indices);
+		CreateVertexBuffer(renderer, verticies);
+		CreateColourBuffer(renderer, size, v_ptr);
+		CreateTransformBuffer(renderer, GetTransform());
 	}
 
-	~Cube() = default;
-
-	void Render(Renderer& renderer) override
-	{
-		for (auto& bind : bind_list)
-		{
-			bind->BindToPipeline(renderer);
-		}
-		size_t count = i_buffer->GetIndexCount();
-		GetContext(renderer).DrawIndexed(count, 0u, 0u);
-	}
-
-	DirectX::XMMATRIX& GetTransform() override { return transform; }
-
-private:
-	DirectX::XMMATRIX transform;
-
-	IndexBuffer* i_buffer{ nullptr };
-	std::vector<std::unique_ptr<IBindable>> bind_list;
+	~Cube() override = default;
 
 };

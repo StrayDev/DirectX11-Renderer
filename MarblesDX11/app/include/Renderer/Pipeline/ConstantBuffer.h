@@ -2,6 +2,8 @@
 #include "Renderer/Pipeline/IBindable.h"
 #include <DirectXMath.h>
 
+using Matrix = DirectX::XMMATRIX;
+
 class ConstantBuffer : public IBindable
 {
 public:
@@ -38,9 +40,8 @@ public:
 
 class TransformConstantBuffer : public IBindable
 {
-	using Matrix = DirectX::XMMATRIX;
-
 public:
+
 	TransformConstantBuffer(Renderer& renderer, Matrix& trans);
 	~TransformConstantBuffer() override = default;
 
@@ -48,5 +49,5 @@ public:
 
 private:
 	VertexConstantBuffer v_buffer;
-	DirectX::XMMATRIX& transform;
+	Matrix& transform;
 };

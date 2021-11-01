@@ -24,12 +24,12 @@ void Application::Init()
 {
 
 	static DirectX::XMMATRIX transform =
-		DirectX::XMMatrixTranslation(2, 0, 4.f);
+		DirectX::XMMatrixTranslation(-2, 0, 4.f);
 
 	obj_list.push_back(Primitive::MakeUnique<Cube>(*renderer_));
 	obj_list.back()->SetTransform(transform);
 
-	obj_list.push_back(Primitive::MakeUnique<Cube>(*renderer_));
+	obj_list.push_back(Primitive::MakeUnique<Sphere>(*renderer_));
 	obj_list.back()->SetTransform(transform);
 
 }
@@ -51,27 +51,21 @@ int Application::Run()
 			DirectX::XMMatrixRotationZ(b += 0.01f) *
 			DirectX::XMMatrixRotationX(b) *
 			DirectX::XMMatrixTranslation(2, 0, 4.f);
+		
 		obj_list[0]->SetTransform(t);
 		obj_list[0]->Render(*renderer_);
+		
 
 		static float a = 0;
 		auto t2 =
 			DirectX::XMMatrixRotationZ(a -= 0.01f) *
 			DirectX::XMMatrixRotationX(a) *
 			DirectX::XMMatrixTranslation(-2, 0, 4.f);
-		obj_list[0]->SetTransform(t2);
-		obj_list[0]->Render(*renderer_);
+		
+		obj_list[1]->SetTransform(t2);
+		obj_list[1]->Render(*renderer_);
 
 
-		/*static DirectX::XMMATRIX transform =
-			DirectX::XMMatrixTranslation(-2, 0, 8.f);
-		obj_list[1]->SetTransform(transform);*/
-
-
-		//for (auto& obj : obj_list)
-		//{
-		//	obj->Render(*renderer_);
-		//}
 
 		renderer_->PostRender(); 		   
 	}

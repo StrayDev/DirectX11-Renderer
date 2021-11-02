@@ -54,6 +54,12 @@
     <ClCompile Include="app\src\Renderer\Pipeline\IBindable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="app\src\Math\Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\src\Renderer\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app\include\Window.h">
@@ -65,7 +71,7 @@
     <ClInclude Include="app\include\Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="app\include\Input.h">
+    <ClInclude Include="app\include\Input\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="app\include\Renderer\Renderer.h">
@@ -102,6 +108,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="app\include\Renderer\Pipeline\InputLayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\include\Renderer\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\include\Math\Transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\include\Input\Keyboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

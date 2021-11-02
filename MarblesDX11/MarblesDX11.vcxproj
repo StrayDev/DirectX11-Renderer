@@ -147,6 +147,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="app\src\Renderer\Camera.cpp" />
+    <ClCompile Include="app\src\Math\Transform.cpp" />
     <ClCompile Include="app\src\Renderer\Pipeline\IBindable.cpp" />
     <ClCompile Include="app\src\Renderer\Pipeline\InputLayout.cpp" />
     <ClCompile Include="app\src\Renderer\Mesh.cpp" />
@@ -164,7 +166,9 @@
   <ItemGroup>
     <ClInclude Include="app\include\Application.h" />
     <ClInclude Include="app\include\Event.h" />
-    <ClInclude Include="app\include\Input.h" />
+    <ClInclude Include="app\include\Input\Input.h" />
+    <ClInclude Include="app\include\Input\Keyboard.h" />
+    <ClInclude Include="app\include\Renderer\Camera.h" />
     <ClInclude Include="app\include\Renderer\Mesh.h" />
     <ClInclude Include="app\include\Renderer\Pipeline\ConstantBuffer.h" />
     <ClInclude Include="app\include\Renderer\Pipeline\InputLayout.h" />
@@ -177,6 +181,7 @@
     <ClInclude Include="app\include\Renderer\Primitives\Primitive.h" />
     <ClInclude Include="app\include\Renderer\Renderer.h" />
     <ClInclude Include="app\include\Renderer\Vertex.h" />
+    <ClInclude Include="app\include\Math\Transform.h" />
     <ClInclude Include="app\include\Window.h" />
   </ItemGroup>
   <ItemGroup>

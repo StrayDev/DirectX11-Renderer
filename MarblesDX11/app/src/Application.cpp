@@ -24,7 +24,7 @@ void Application::Init()
 {
 
 	static DirectX::XMMATRIX transform =
-		DirectX::XMMatrixTranslation(-2, 0, 4.f);
+		DirectX::XMMatrixTranslation(-2, 0, 0.f);
 
 	obj_list.push_back(Primitive::MakeUnique<Cube>(*renderer_));
 	obj_list.back()->SetTransform(transform);
@@ -44,13 +44,21 @@ int Application::Run()
 			return window_->GetExitCode();
 		}
 
+		{
+			auto& camera = renderer_->GetCamera();
+
+			//if (keyboard_->)
+			camera.Update();
+		}
+
+
 		renderer_->PreRender();
 
 		static float b = 0;
 		auto t = 
 			DirectX::XMMatrixRotationZ(b += 0.01f) *
 			DirectX::XMMatrixRotationX(b) *
-			DirectX::XMMatrixTranslation(2, 0, 4.f);
+			DirectX::XMMatrixTranslation(2, 0, 0.f);
 		
 		obj_list[0]->SetTransform(t);
 		obj_list[0]->Render(*renderer_);
@@ -60,7 +68,7 @@ int Application::Run()
 		auto t2 =
 			DirectX::XMMatrixRotationZ(a -= 0.01f) *
 			DirectX::XMMatrixRotationX(a) *
-			DirectX::XMMatrixTranslation(-2, 0, 4.f);
+			DirectX::XMMatrixTranslation(-2, 0, 0.f);
 		
 		obj_list[1]->SetTransform(t2);
 		obj_list[1]->Render(*renderer_);

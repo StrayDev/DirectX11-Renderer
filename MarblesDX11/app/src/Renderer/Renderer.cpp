@@ -11,9 +11,9 @@ namespace DX = DirectX;
 
 Renderer::Renderer(HWND w_handle)
 {
-	// Set default camera view
-	// this will be replaced with a camera
-	ViewMatrix = DirectX::XMMatrixPerspectiveLH(1.f, 9.f / 16.f, 0.3f, 10.f);
+	// create camera and perspective
+	camera = std::make_unique<Camera>();
+	perspective = DirectX::XMMatrixPerspectiveLH(1.f, 9.f / 16.f, 0.3f, 100.f);
 
 	// create the swap chain
 	auto swap_chain_data = CreateSwapChainDescription(w_handle);
@@ -160,7 +160,3 @@ void Renderer::CreateAndSetDepthTextureAndView(D3D11_TEXTURE2D_DESC& texture, D3
 	context_->OMSetRenderTargets(1u, render_target_.GetAddressOf(), depth_stencil_view_.Get());
 }
 
-DirectX::XMMATRIX& Renderer::GetViewMatrix()
-{
-	return ViewMatrix;
-}

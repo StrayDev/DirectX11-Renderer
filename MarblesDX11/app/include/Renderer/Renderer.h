@@ -6,6 +6,9 @@
 #include <DirectXMath.h>
 
 #include "Renderer/Pipeline/IBindable.h"
+#include "Camera.h"
+
+namespace DX = DirectX;
 
 class IRenderable;
 struct Vertex;
@@ -17,6 +20,8 @@ class Renderer
 
 	template<typename T>
 	using com_ptr = Microsoft::WRL::ComPtr<T>;
+	using Matrix = DirectX::XMMATRIX;
+
 
 public:
 	Renderer(HWND w_handle);
@@ -28,7 +33,10 @@ public:
 	void ClearBuffer(float r, float g, float b) noexcept;
 	void EndFrame();
 
-	DirectX::XMMATRIX& GetViewMatrix();
+	Camera& GetCamera() { return *camera; }
+
+	const Matrix& GetView() { return camera->GetView(); }
+	const Matrix& GetPerspective() { return perspective; }
 
 private:
 	DXGI_SWAP_CHAIN_DESC CreateSwapChainDescription(HWND w_handle);
@@ -46,9 +54,11 @@ private:
 	ID3D11DeviceContext& GetContext() { return *context_.Get(); }
 
 
-	DirectX::XMMATRIX ViewMatrix;
+	DirectX::XMMATRIX perspective;
 
 private:
+	std::unique_ptr<Camera> camera{ nullptr };
+
 	com_ptr<ID3D11Device> device_{ nullptr };
 	com_ptr<IDXGISwapChain> swap_chain_{ nullptr };
 	com_ptr<ID3D11DeviceContext> context_{ nullptr };

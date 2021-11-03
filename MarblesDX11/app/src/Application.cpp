@@ -44,10 +44,14 @@ int Application::Run()
 			return window_->GetExitCode();
 		}
 
+		// camera test
 		{
 			auto& camera = renderer_->GetCamera();
+			
+			//static float i = 0;
+			//i += 0.1f;
+			camera.GetTransform().SetPosition(0, 0, -5);
 
-			//if (keyboard_->)
 			camera.Update();
 		}
 

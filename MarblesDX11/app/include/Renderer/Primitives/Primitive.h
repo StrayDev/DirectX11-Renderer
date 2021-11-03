@@ -34,10 +34,10 @@ public:
 	Cube(Renderer& renderer)
 	{
 		std::vector<Vertex> verticies = { 
-			{  -1.f, -1.f, -1.f },{   1.f, -1.f, -1.f },
-			{  -1.f,  1.f, -1.f },{   1.f,  1.f, -1.f },
-			{  -1.f, -1.f,  1.f },{   1.f, -1.f,  1.f },
-	        {  -1.f,  1.f,  1.f },{   1.f,  1.f,  1.f }
+			{{-1.f, -1.f, -1.f }}, {{ 1.f, -1.f, -1.f }},
+			{{-1.f,  1.f, -1.f }}, {{ 1.f,  1.f, -1.f }},
+			{{-1.f, -1.f,  1.f }}, {{ 1.f, -1.f,  1.f }},
+			{{-1.f,  1.f,  1.f }}, {{ 1.f,  1.f,  1.f }}
 		};
 		std::vector<unsigned short> indices =
 		{
@@ -77,8 +77,6 @@ public:
 class Sphere : public Mesh
 {
 public:
-	using tuple_VI = std::tuple<std::vector<Vertex>, std::vector<unsigned short>>;
-
 	~Sphere() override = default;
 	Sphere(Renderer& renderer)
 	{
@@ -119,7 +117,7 @@ public:
 		auto radius = 1.f;
 		auto resolution = 16;
 
-		v.push_back({ 0.0F, +radius, 0.0F });
+		v.push_back({ { 0.0F, +radius, 0.0F }});
 
 		float phiStep = DirectX::XM_PI / resolution;
 		float thetaStep = phiStep * 2.0F;
@@ -130,17 +128,18 @@ public:
 			for (unsigned short j = 0; j <= resolution; j++)
 			{
 				float theta = j * thetaStep;
-				Vertex pos
+				Vertex vp;
+				vp.pos = 
 				{
 					radius * std::sinf(phi) * std::cosf(theta),
 					radius * std::cosf(phi),
 					radius * std::sinf(phi) * std::sinf(theta)
 				};
-				v.push_back(pos);
+				v.push_back(vp);
 			}
 		}
 
-		v.push_back({ 0.0F, -radius, 0.0F });
+		v.push_back({{ 0.0F, -radius, 0.0F }});
 
 		// Top
 		for (unsigned int i = 1; i <= resolution; i++)

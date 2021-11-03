@@ -169,6 +169,8 @@
     <ClInclude Include="app\include\Input\Input.h" />
     <ClInclude Include="app\include\Input\Keyboard.h" />
     <ClInclude Include="app\include\Renderer\Camera.h" />
+    <ClInclude Include="app\include\Renderer\Lighting.h" />
+    <ClInclude Include="app\include\Renderer\Material.h" />
     <ClInclude Include="app\include\Renderer\Mesh.h" />
     <ClInclude Include="app\include\Renderer\Pipeline\ConstantBuffer.h" />
     <ClInclude Include="app\include\Renderer\Pipeline\InputLayout.h" />

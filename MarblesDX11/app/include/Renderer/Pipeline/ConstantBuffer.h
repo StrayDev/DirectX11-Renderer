@@ -41,7 +41,6 @@ public:
 class TransformConstantBuffer : public IBindable
 {
 public:
-
 	TransformConstantBuffer(Renderer& renderer, Matrix& trans);
 	~TransformConstantBuffer() override = default;
 
@@ -50,4 +49,10 @@ public:
 private:
 	VertexConstantBuffer v_buffer;
 	Matrix& transform;
+
+	struct Transforms
+	{
+		Matrix modelView;
+		Matrix model;
+	};
 };

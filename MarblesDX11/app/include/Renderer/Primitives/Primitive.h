@@ -33,7 +33,7 @@ public:
 	~Cube() override = default;
 	Cube(Renderer& renderer)
 	{
-		std::vector<Vertex> verticies = { 
+		std::vector<Vertex> vertices = { 
 			{{-1.f, -1.f, -1.f }}, {{ 1.f, -1.f, -1.f }},
 			{{-1.f,  1.f, -1.f }}, {{ 1.f,  1.f, -1.f }},
 			{{-1.f, -1.f,  1.f }}, {{ 1.f, -1.f,  1.f }},
@@ -45,30 +45,13 @@ public:
 			4,5,7, 4,7,6, 0,4,2, 2,4,6, 0,1,4, 1,5,4
 		};
 
-		struct ConstantBuffer2	
-		{
-			struct
-			{
-				float r; float g; float b; float a;
-			} 
-			face_colours[6]; 
-		};
-
-		ConstantBuffer2 cb2 = 
-		{{
-			{ 1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f }, { 0.f, 0.f, 1.f },
-			{ 1.f, 1.f, 0.f }, { 1.f, 0.f, 1.f }, { 0.f, 1.f, 1.f } 
-		}};
-
-		auto size = sizeof(cb2);
-		auto v_ptr = static_cast<void*>(&cb2);
+		Vertex::GenerateFaceNormals(vertices, indices);
 
 		CreatePixelShader(renderer);
 		CreateVertexShader(renderer);
 		CreateInputLayout(renderer);
 		CreateIndexBuffer(renderer, indices);
-		CreateVertexBuffer(renderer, verticies);
-		CreateColourBuffer(renderer, size, v_ptr);
+		CreateVertexBuffer(renderer, vertices);
 		CreateTransformBuffer(renderer, GetTransform());
 	}
 
@@ -85,30 +68,13 @@ public:
 		std::vector<unsigned short> indices;
 		GenerateSphere(vertices, indices);
 
-		struct ConstantBuffer2
-		{
-			struct
-			{
-				float r; float g; float b; float a;
-			}
-			face_colours[6];
-		};
-
-		ConstantBuffer2 cb2 =
-		{ {
-			{ 1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f }, { 0.f, 0.f, 1.f },
-			{ 1.f, 1.f, 0.f }, { 0.f, 1.f, 1.f }, { 1.f, 0.f, 1.f }
-		} };
-
-		auto size = sizeof(cb2);
-		auto v_ptr = static_cast<void*>(&cb2);
+		Vertex::GenerateFaceNormals(vertices, indices);
 
 		CreatePixelShader(renderer);
 		CreateVertexShader(renderer);
 		CreateInputLayout(renderer);
 		CreateIndexBuffer(renderer, indices);
 		CreateVertexBuffer(renderer, vertices);
-		CreateColourBuffer(renderer, size, v_ptr);
 		CreateTransformBuffer(renderer, GetTransform());
 	}
 	

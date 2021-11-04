@@ -8,6 +8,11 @@
 #include "Renderer/Pipeline/IBindable.h"
 #include "Camera.h"
 
+// no, bad
+#include "Pipeline/ConstantBuffer.h"
+#include "Renderer/Lighting.h"
+#include "Renderer/Material.h"
+
 namespace DX = DirectX;
 
 class IRenderable;
@@ -67,4 +72,10 @@ private:
 	com_ptr<ID3D11DepthStencilView> depth_stencil_view_{ nullptr };
 
 	com_ptr<ID3DBlob> blob_{ nullptr };
+
+	std::unique_ptr<ConstantBuffer> lightBuffer { nullptr };
+	std::unique_ptr<ConstantBuffer> materialBuffer{ nullptr };
+	DirectionalLight light_data;
+	Material mat_data;
+
 };

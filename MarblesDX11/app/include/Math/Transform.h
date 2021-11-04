@@ -24,7 +24,7 @@ public:
 	const Vector Up();
 
 private:
-	Matrix matrix;
+	Matrix matrix{};
 
 	Vector forward =  DX::XMVectorSet(0, 0, 1, 0);
 

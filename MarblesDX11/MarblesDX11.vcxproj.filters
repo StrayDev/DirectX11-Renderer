@@ -129,5 +129,7 @@
   <ItemGroup>
     <FxCompile Include="app\shaders\VertexShader.hlsl" />
     <FxCompile Include="app\shaders\PixelShader.hlsl" />
+    <FxCompile Include="app\shaders\Lighting.fx" />
+    <FxCompile Include="app\shaders\LitPixelShader.hlsl" />
   </ItemGroup>
 </Project>

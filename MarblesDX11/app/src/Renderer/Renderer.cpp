@@ -7,6 +7,7 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
+
 namespace DX = DirectX;
 
 Renderer::Renderer(HWND w_handle)
@@ -37,11 +38,41 @@ Renderer::Renderer(HWND w_handle)
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 	context_->RSSetViewports(1u, &vp);
+
+	// make the lighting 
+	//light_data = 
+	//{
+	//	.Ambient = { 100.f, .5f, .5f, 1.f },
+	//	.Diffuse = { .5f, .5f, .5f, 1.f },
+	//	.Specular = { .5f, .5f, .5f, 1.f },
+	//	.Direction = { .5f, .5f, .5f },
+	//};
+
+	//mat_data =
+	//{
+	//	.Ambient = { .5f, .7f, .45f, 1.f },
+	//	.Diffuse = { .5f, .7f, .45f, 1.f },
+	//	.Specular = { .2f, .2f, .2f, 1.f },
+	//};
+
+	//auto eye = DX::XMFLOAT3(0, 0, -5);
+	//
+	//auto e = std::make_unique<PixelConstantBuffer>(*this, sizeof(eye), static_cast<void*>(&eye));
+	//e->BindToPipeline(*this);
+	
+	//auto pos = DX::XMFLOAT3(.0f, .0f, .0f);
+	//lightBuffer = std::make_unique<PixelConstantBuffer>(*this, sizeof(pos), static_cast<void*>(&pos));
+	//lightBuffer->BindToPipeline(*this);
+
+	//materialBuffer = std::make_unique<PixelConstantBuffer>(*this, sizeof(mat_data), static_cast<void*>(&mat_data));
+	//materialBuffer->BindToPipeline(*this);
 }
 
 void Renderer::PreRender()
 {
-	ClearBuffer(0, 0, 0);
+	ClearBuffer(0, 0, 1);
+
+	//lightBuffer->BindToPipeline(*this);
 }
 
 void Renderer::PostRender()

@@ -95,7 +95,6 @@ void Renderer::ClearBuffer(float r, float g, float b) noexcept
 DXGI_SWAP_CHAIN_DESC Renderer::CreateSwapChainDescription(HWND w_handle)
 {
 	DXGI_SWAP_CHAIN_DESC data{ 0 };
-
 	data.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	data.BufferCount = 1; // Double Buffering
 	data.BufferDesc.Width = 0;  // Set to use window size
@@ -111,7 +110,7 @@ DXGI_SWAP_CHAIN_DESC Renderer::CreateSwapChainDescription(HWND w_handle)
 	data.Flags = 0;
 	data.Windowed = TRUE;
 	data.OutputWindow = w_handle;
-
+	
 	return data;
 }
 
@@ -139,6 +138,7 @@ void Renderer::CreateDeviceAndSwapChain(DXGI_SWAP_CHAIN_DESC& desc)
 		nullptr, 
 		&render_target_
 	);
+
 }
 
 D3D11_DEPTH_STENCIL_DESC Renderer::CreateDepthBufferData()

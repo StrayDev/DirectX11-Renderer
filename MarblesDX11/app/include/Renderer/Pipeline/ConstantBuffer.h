@@ -52,7 +52,7 @@ private:
 
 	struct Transforms
 	{
-		Matrix modelView;
+		Matrix modelViewProj;
 		Matrix model;
 	};
 };

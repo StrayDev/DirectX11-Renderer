@@ -50,7 +50,7 @@ void TransformConstantBuffer::BindToPipeline(Renderer& renderer)
 	auto mv = DirectX::XMMatrixTranspose( transform * renderer.GetView() * renderer.GetPerspective());
 	Transforms tf { mv, m };
 	
-	v_buffer.Update(renderer, sizeof(DirectX::XMMATRIX), static_cast<void*>(&tf));
+	v_buffer.Update(renderer, sizeof(Transforms), static_cast<void*>(&tf));
 	v_buffer.BindToPipeline(renderer);
 }
 

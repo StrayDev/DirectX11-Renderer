@@ -33,25 +33,39 @@ public:
 	~Cube() override = default;
 	Cube(Renderer& renderer)
 	{
-		std::vector<Vertex> vertices = { 
-			{{-1.f, -1.f, -1.f }}, {{ 1.f, -1.f, -1.f }},
-			{{-1.f,  1.f, -1.f }}, {{ 1.f,  1.f, -1.f }},
-			{{-1.f, -1.f,  1.f }}, {{ 1.f, -1.f,  1.f }},
-			{{-1.f,  1.f,  1.f }}, {{ 1.f,  1.f,  1.f }}
+		//std::vector<Vertex> vertices = { 
+		//	{{-1.f, -1.f, -1.f },}, {{ 1.f, -1.f, -1.f }},
+		//	{{-1.f,  1.f, -1.f }}, {{ 1.f,  1.f, -1.f }},
+		//	{{-1.f, -1.f,  1.f }}, {{ 1.f, -1.f,  1.f }},
+		//	{{-1.f,  1.f,  1.f }}, {{ 1.f,  1.f,  1.f }}
+		//};
+		//std::vector<unsigned short> indices =
+		//{
+		//	0,2,1, 2,3,1, 1,3,5, 3,7,5, 2,6,3, 3,6,7, 
+		//	4,5,7, 4,7,6, 0,4,2, 2,4,6, 0,1,4, 1,5,4
+		//};
+		
+		std::vector<Vertex> vertices = {
+		{{-1.f, -1.f, -1.f },}, {{ 1.f, -1.f, -1.f }},
+		{{-1.f,  1.f, -1.f }}, {{ 1.f,  1.f, -1.f }},
+		{{-1.f, -1.f,  1.f }}, {{ 1.f, -1.f,  1.f }},
+		{{-1.f,  1.f,  1.f }}, {{ 1.f,  1.f,  1.f }}
 		};
 		std::vector<unsigned short> indices =
 		{
-			0,2,1, 2,3,1, 1,3,5, 3,7,5, 2,6,3, 3,6,7, 
+			0,2,1, 2,3,1, 1,3,5, 3,7,5, 2,6,3, 3,6,7,
 			4,5,7, 4,7,6, 0,4,2, 2,4,6, 0,1,4, 1,5,4
 		};
 
-		Vertex::GenerateFaceNormals(vertices, indices);
+		//Vertex::GenerateFaceNormals(vertices, indices);
 
-		CreatePixelShader(renderer);
 		CreateVertexShader(renderer);
+		CreatePixelShader(renderer);
 		CreateInputLayout(renderer);
+
 		CreateIndexBuffer(renderer, indices);
 		CreateVertexBuffer(renderer, vertices);
+
 		CreateTransformBuffer(renderer, GetTransform());
 	}
 
@@ -63,15 +77,14 @@ public:
 	~Sphere() override = default;
 	Sphere(Renderer& renderer)
 	{
-
 		std::vector<Vertex> vertices;
 		std::vector<unsigned short> indices;
+		
 		GenerateSphere(vertices, indices);
+		//Vertex::GenerateFaceNormals(vertices, indices);
 
-		Vertex::GenerateFaceNormals(vertices, indices);
-
-		CreatePixelShader(renderer);
 		CreateVertexShader(renderer);
+		CreatePixelShader(renderer);
 		CreateInputLayout(renderer);
 		CreateIndexBuffer(renderer, indices);
 		CreateVertexBuffer(renderer, vertices);

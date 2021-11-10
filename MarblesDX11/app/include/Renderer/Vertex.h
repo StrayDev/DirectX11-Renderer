@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <DirectXMath.h>
+#include <iostream>
 
 namespace DX = DirectX;
 using vector3 = DirectX::XMVECTOR;
@@ -9,6 +10,36 @@ struct Vertex
 {
 	vector3 pos;
 	vector3 normal;
+
+	static void GenerateFaceNormalsIndependant(std::vector<Vertex>& vertices, std::vector<unsigned short>& indices)
+	{
+		auto num_tri = indices.size() / 3;
+		for (auto i = 0; i < num_tri; i++)
+		{
+			// get the points of the triangle
+			auto& v1 = vertices[indices[i * 3 + 0]];
+			auto& v2 = vertices[indices[i * 3 + 1]];
+			auto& v3 = vertices[indices[i * 3 + 2]];
+
+			// get 2 of the edge vectors 
+			auto U = DX::XMVectorSubtract(v2.pos, v1.pos);
+			auto V = DX::XMVectorSubtract(v3.pos, v1.pos);
+
+			// the normal is the dot of the 2 edges
+			auto normal = DX::XMVector3Cross(U, V);
+
+			// normalize the vector
+			normal = DX::XMVector3Normalize(normal);
+
+			v1.normal = normal;
+			v2.normal = normal;
+			v3.normal = normal;
+
+			DX::XMFLOAT3 n;
+			DX::XMStoreFloat3(&n, normal);
+			std::cout << n.x << " " << n.y << " " << n.z << "\n";
+		}
+	}
 
 	static void GenerateFaceNormals(std::vector<Vertex>& vertices, std::vector<unsigned short>& indices)
 	{

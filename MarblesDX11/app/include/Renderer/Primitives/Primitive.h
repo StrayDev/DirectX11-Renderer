@@ -34,30 +34,48 @@ public:
 	Cube(Renderer& renderer)
 	{
 		//std::vector<Vertex> vertices = { 
-		//	{{-1.f, -1.f, -1.f },}, {{ 1.f, -1.f, -1.f }},
-		//	{{-1.f,  1.f, -1.f }}, {{ 1.f,  1.f, -1.f }},
-		//	{{-1.f, -1.f,  1.f }}, {{ 1.f, -1.f,  1.f }},
-		//	{{-1.f,  1.f,  1.f }}, {{ 1.f,  1.f,  1.f }}
+		//	0 {{-1.f, -1.f, -1.f }}, {{ 1.f, -1.f, -1.f }},
+		//	2 {{-1.f,  1.f, -1.f }}, {{ 1.f,  1.f, -1.f }},
+		//	4 {{-1.f, -1.f,  1.f }}, {{ 1.f, -1.f,  1.f }},
+		//	6 {{-1.f,  1.f,  1.f }}, {{ 1.f,  1.f,  1.f }}
 		//};
 		//std::vector<unsigned short> indices =
 		//{
-		//	0,2,1, 2,3,1, 1,3,5, 3,7,5, 2,6,3, 3,6,7, 
-		//	4,5,7, 4,7,6, 0,4,2, 2,4,6, 0,1,4, 1,5,4
+		//	0,2,1, 2,3,1, //
+		//  1,3,5, 3,7,5, //
+		//  2,6,3, 3,6,7, //
+		//	4,5,7, 4,7,6, //
+		//  0,4,2, 2,4,6, //
+		//  0,1,4, 1,5,4
 		//};
 		
+		auto u = World::Up();
+		auto d = DX::XMVectorSubtract(World::Zero(), u);
+		auto f = World::Forward();
+		auto b = DX::XMVectorSubtract(World::Zero(), f);
+		auto l = World::Left();
+		auto r = DX::XMVectorSubtract(World::Zero(), l);
+
 		std::vector<Vertex> vertices = {
-		{{-1.f, -1.f, -1.f },}, {{ 1.f, -1.f, -1.f }},
-		{{-1.f,  1.f, -1.f }}, {{ 1.f,  1.f, -1.f }},
-		{{-1.f, -1.f,  1.f }}, {{ 1.f, -1.f,  1.f }},
-		{{-1.f,  1.f,  1.f }}, {{ 1.f,  1.f,  1.f }}
-		};
-		std::vector<unsigned short> indices =
-		{
-			0,2,1, 2,3,1, 1,3,5, 3,7,5, 2,6,3, 3,6,7,
-			4,5,7, 4,7,6, 0,4,2, 2,4,6, 0,1,4, 1,5,4
+		{{-1.f, -1.f, -1.f }}, {{ 1.f, -1.f, -1.f }}, {{-1.f,  1.f, -1.f }}, {{ 1.f, 1.f, -1.f }},	
+		{{ 1.f, -1.f, -1.f }}, {{ 1.f,  1.f, -1.f }}, {{ 1.f, -1.f,  1.f }}, {{ 1.f,  1.f,  1.f }}, 
+		{{-1.f,  1.f, -1.f }}, {{-1.f,  1.f,  1.f }}, {{ 1.f,  1.f, -1.f }}, {{ 1.f,  1.f,  1.f }}, 
+		{{-1.f, -1.f,  1.f }}, {{ 1.f, -1.f,  1.f }}, {{ 1.f,  1.f,  1.f }}, {{-1.f,  1.f,  1.f }},
+		{{-1.f, -1.f, -1.f }}, {{-1.f, -1.f,  1.f }}, {{-1.f,  1.f, -1.f }}, {{-1.f,  1.f,  1.f }},
+		{{-1.f, -1.f, -1.f }}, {{ 1.f, -1.f, -1.f }}, {{-1.f, -1.f,  1.f }}, {{ 1.f, -1.f,  1.f }},
 		};
 
-		//Vertex::GenerateFaceNormals(vertices, indices);
+		std::vector<unsigned short> indices =
+		{
+			0,2,1,    2,3,1,
+			4,5,6,    5,7,6,
+			8,9,10,   10,9,11,
+			12,13,14, 12,14,15,
+			16,17,18, 18,17,19,
+			20,21,22, 21,23,22,
+		};
+
+		Vertex::GenerateFaceNormalsIndependant(vertices, indices);
 
 		CreateVertexShader(renderer);
 		CreatePixelShader(renderer);
@@ -81,7 +99,7 @@ public:
 		std::vector<unsigned short> indices;
 		
 		GenerateSphere(vertices, indices);
-		//Vertex::GenerateFaceNormals(vertices, indices);
+		Vertex::GenerateFaceNormalsIndependant(vertices, indices);
 
 		CreateVertexShader(renderer);
 		CreatePixelShader(renderer);

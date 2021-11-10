@@ -3,10 +3,10 @@
 //	float3 lightPos;
 //};
 
-static const float3 lightPos = { 0.0f, 1.0f, 0.0f };
+static const float3 lightPos = { 0.0f, 0.0f, 0.0f };
 
-static const float3 materialColour = { 0.7f, 0.7f, 0.9f };
-static const float3 ambient = { 0.15f, 0.15f, 0.15f };
+static const float3 materialColour = { 0.7f, 0.7f, 0.7f };
+static const float3 ambient = { 0.2f, 0.2f, 0.2f };
 static const float3 diffuseColor = { 1.0f, 1.0f, 1.0f };
 static const float diffuseIntensity = 1.0f;
 static const float attConst = 1.0f;
@@ -21,7 +21,7 @@ float4 main(float3 worldPos : Position, float3 n : Normal) : SV_Target
 	const float3 dirToL = vToL / distToL;
 
 	// diffuse attenuation
-	const float att = attConst + attLin * distToL + attQuad * (distToL * distToL);
+	const float att = 1.0f / (attConst + attLin * distToL + attQuad * (distToL * distToL));
 
 	// diffuse intensity
 	const float3 diffuse = diffuseColor * diffuseIntensity * att * max(0.0f, dot(dirToL, n));

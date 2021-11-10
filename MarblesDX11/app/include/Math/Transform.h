@@ -33,6 +33,7 @@ private:
 class World
 {
 public:
+	static constexpr Vector Zero() { return { 0, 0, 0, 0 }; }
 	static constexpr Vector Up() { return { 0, 1, 0, 0}; }
 	static constexpr Vector Left() { return { -1, 0, 0, 0 }; }
 	static constexpr Vector Forward() { return { 0, 0, 1, 0 }; }

@@ -5,10 +5,17 @@
 class Renderer;
 class IndexBuffer;
 
+struct MeshData
+{
+	std::vector<Vertex> vertices;
+	std::vector<unsigned short> indices;
+};
+
 class Mesh : public IRenderable
 {
 public:
 	Mesh() = default;
+	Mesh(Renderer& renderer, MeshData& data);
 	virtual ~Mesh() override = default;
 
 	void Render(Renderer& renderer) override;
@@ -29,4 +36,6 @@ private:
 
 	IndexBuffer* i_buffer{ nullptr };
 	std::vector<std::unique_ptr<IBindable>> bind_list;
+
+private:
 };

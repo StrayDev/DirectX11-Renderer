@@ -125,6 +125,12 @@
     <ClInclude Include="app\include\Renderer\Lighting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="app\include\lib\TinyObj.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\include\ObjLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="app\shaders\VertexShader.hlsl" />

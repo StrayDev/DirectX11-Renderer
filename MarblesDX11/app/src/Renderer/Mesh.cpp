@@ -9,6 +9,19 @@
 #include "Renderer/Pipeline/ConstantBuffer.h"
 #include <d3d11.h>
 
+Mesh::Mesh(Renderer& renderer, MeshData& data)
+{
+	// create shaders
+	CreateVertexShader(renderer);
+	CreatePixelShader(renderer);
+	// create layout
+	CreateInputLayout(renderer);
+	//create buffers
+	CreateIndexBuffer(renderer, data.indices);
+	CreateVertexBuffer(renderer, data.vertices);
+	CreateTransformBuffer(renderer, GetTransform());
+}
+
 void Mesh::Render(Renderer& renderer)
 {
 	for (auto& bind : bind_list)

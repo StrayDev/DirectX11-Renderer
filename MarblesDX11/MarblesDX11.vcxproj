@@ -168,6 +168,8 @@
     <ClInclude Include="app\include\Event.h" />
     <ClInclude Include="app\include\Input\Input.h" />
     <ClInclude Include="app\include\Input\Keyboard.h" />
+    <ClInclude Include="app\include\lib\TinyObj.h" />
+    <ClInclude Include="app\include\ObjLoader.h" />
     <ClInclude Include="app\include\Renderer\Camera.h" />
     <ClInclude Include="app\include\Renderer\Lighting.h" />
     <ClInclude Include="app\include\Renderer\Material.h" />

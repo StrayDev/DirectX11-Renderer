@@ -34,12 +34,12 @@ namespace Input
 
 		void OnKeyDown(unsigned char key) 
 		{
-			std::cout << "Keyboard Down" << key << "\n";
+
 		}
 
 		void OnKeyRelease(unsigned char key)
 		{
-			std::cout << "Keyboard Release\n";
+			//std::cout << "Keyboard Release\n";
 		}
 
 		void OnChar(unsigned char key)
@@ -94,13 +94,14 @@ namespace Input
 		void OnButtonDown(Event& e)
 		{
 			auto& mouse = static_cast<MouseButtonEvent&>(e);
-			std::cout << "Mouse Button " << mouse.Button << " Pressed\n";
+			auto b = bool();
+			//std::cout << "Mouse Button " << mouse.Button << " Pressed\n";
 		}
 
 		void OnButtonRelease(Event& e)
 		{
 			auto& mouse = static_cast<MouseButtonEvent&>(e);
-			std::cout << "Mouse Button " << mouse.Button << " Released\n";
+			//std::cout << "Mouse Button " << mouse.Button << " Released\n";
 		}
 
 	};

@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Renderer/Primitives/Primitive.h"
+#include "ObjLoader.h"
 
 
 Application::Application()
@@ -23,16 +24,12 @@ Application::Application()
 
 void Application::Init()
 {
+	auto loader = ObjLoader();
+	loader.LoadObj("models/cube.obj");
 
-	static DirectX::XMMATRIX transform =
-		DirectX::XMMatrixTranslation(-2, 0, 0.f);
-
-	obj_list.push_back(Primitive::MakeUnique<Cube>(*renderer_));
-	obj_list.back()->SetTransform(transform);
-
-	obj_list.push_back(Primitive::MakeUnique<Sphere>(*renderer_));
-	obj_list.back()->SetTransform(transform);
-
+	auto mesh_data = loader.GetMeshData();
+	obj_list.push_back( std::make_unique<Mesh>(*renderer_, mesh_data) );
+	obj_list.push_back(std::make_unique<Mesh>(*renderer_, mesh_data));
 }
 
 int Application::Run()
@@ -48,11 +45,7 @@ int Application::Run()
 		// camera test
 		{
 			auto& camera = renderer_->GetCamera();
-			
-			//static float i = 0;
-			//i += 0.1f;
 			camera.GetTransform().SetPosition(0, 0, -5);
-
 			camera.Update();
 		}
 
@@ -71,14 +64,12 @@ int Application::Run()
 
 		static float a = 0;
 		auto t2 =
-			DirectX::XMMatrixRotationZ(a -= 0.01f) *
-			DirectX::XMMatrixRotationX(a) *
-			DirectX::XMMatrixTranslation(-2, 0, 0.f);
+			DirectX::XMMatrixRotationY(a += 0.01f) *
+			DirectX::XMMatrixTranslation(-2, 0, 0);
 		
 		obj_list[1]->SetTransform(t2);
 		obj_list[1]->Render(*renderer_);
-
-
+		
 
 		renderer_->PostRender(); 		   
 	}

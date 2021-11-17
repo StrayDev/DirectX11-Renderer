@@ -86,7 +86,7 @@ public:
 
                         // store the normals
                         vertices.back().normal = { nx, ny, nz };
-                        std::cout << nx << " " << ny << " " << nz << "\n";
+                        //std::cout << nx << " " << ny << " " << nz << "\n";
                     }
 
 

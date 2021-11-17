@@ -136,5 +136,8 @@
     <FxCompile Include="app\shaders\VertexShader.hlsl" />
     <FxCompile Include="app\shaders\PixelShader.hlsl" />
     <FxCompile Include="app\shaders\LitPixelShader.hlsl" />
+    <FxCompile Include="app\shaders\SimplePhongVS.hlsl" />
+    <FxCompile Include="app\shaders\InstancedPhongVS.hlsl" />
+    <FxCompile Include="app\shaders\TexturedLitPixelShader.hlsl" />
   </ItemGroup>
 </Project>

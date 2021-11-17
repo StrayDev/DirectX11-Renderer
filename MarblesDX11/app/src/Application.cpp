@@ -28,7 +28,11 @@ void Application::Init()
 	loader.LoadObj("models/cube.obj");
 
 	auto mesh_data = loader.GetMeshData();
-	obj_list.push_back( std::make_unique<Mesh>(*renderer_, mesh_data) );
+	obj_list.push_back( std::make_unique<Mesh>(*renderer_, mesh_data));
+
+
+	loader.LoadObj("models/sphere.obj");
+	mesh_data = loader.GetMeshData();
 	obj_list.push_back(std::make_unique<Mesh>(*renderer_, mesh_data));
 }
 

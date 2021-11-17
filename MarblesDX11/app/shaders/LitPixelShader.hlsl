@@ -3,12 +3,14 @@
 //	float3 lightPos;
 //};
 
-static const float3 lightPos = { 0.0f, 0.0f, 0.0f };
+static const float3 lightPos = { 0.0f, 3.0f, 0.0f };
 
 static const float3 materialColour = { 0.7f, 0.7f, 0.7f };
 static const float3 ambient = { 0.2f, 0.2f, 0.2f };
-static const float3 diffuseColor = { 1.0f, 1.0f, 1.0f };
-static const float diffuseIntensity = 1.0f;
+static const float3 diffuseColor = { .5f, .5f, 1.0f };
+static const float diffuseIntensity = 5.0f;
+
+// 3 attenuation constants, constant, liniar & quadratic
 static const float attConst = 1.0f;
 static const float attLin = 1.0f;
 static const float attQuad = 1.0f;
@@ -25,7 +27,7 @@ float4 main(float3 worldPos : Position, float3 n : Normal) : SV_Target
 
 	// diffuse intensity
 	const float3 diffuse = diffuseColor * diffuseIntensity * att * max(0.0f, dot(dirToL, n));
-
+	
 	// final colour
     return float4(saturate((diffuse + ambient) * materialColour), 1.0f);
 }

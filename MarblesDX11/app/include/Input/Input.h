@@ -86,8 +86,8 @@ namespace Input
 		void OnMove(Event& e)
 		{
 			auto& mouse = static_cast<MouseMoveEvent&>(e);
-			x = mouse._X;
-			y = mouse._Y;
+			//x = mouse._X;
+			//y = mouse._Y;
 			//std::cout << "Mouse x = " << mouse._X << ", y = " << mouse._Y << '\n';
 		}
 

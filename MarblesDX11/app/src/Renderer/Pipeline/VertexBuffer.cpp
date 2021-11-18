@@ -5,7 +5,7 @@ VertexBuffer::VertexBuffer(Renderer& renderer, const Verticies& verticies)
 {
 	auto data = D3D11_BUFFER_DESC
 	{
-		.ByteWidth = sizeof(Vertex) * verticies.size(),
+		.ByteWidth = static_cast<unsigned int>(sizeof(Vertex) * verticies.size()),
 		.Usage = D3D11_USAGE_DEFAULT,
 		.BindFlags = D3D11_BIND_VERTEX_BUFFER,
 		.CPUAccessFlags = 0u,

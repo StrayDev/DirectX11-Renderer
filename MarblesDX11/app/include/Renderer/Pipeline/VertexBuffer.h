@@ -16,6 +16,6 @@ public:
 private:
 	buffer buffer;
 	
-	const size_t STRIDE;
-	const size_t OFFSET;
+	const unsigned int STRIDE;
+	const unsigned int OFFSET;
 };

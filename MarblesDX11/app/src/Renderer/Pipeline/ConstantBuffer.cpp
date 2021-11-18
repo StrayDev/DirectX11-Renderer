@@ -1,7 +1,7 @@
-#include "Renderer\Pipeline\ConstantBuffer.h"
+#include "Renderer/Pipeline/ConstantBuffer.h"
 #include "Renderer/Renderer.h"
 
-ConstantBuffer::ConstantBuffer(Renderer& renderer, size_t type_size, void* v_ptr)
+ConstantBuffer::ConstantBuffer(Renderer& renderer, unsigned int type_size, void* v_ptr)
 {
 	auto data = D3D11_BUFFER_DESC
 	{
@@ -17,7 +17,7 @@ ConstantBuffer::ConstantBuffer(Renderer& renderer, size_t type_size, void* v_ptr
 	GetDevice(renderer).CreateBuffer(&data, &sub_data, buffer.GetAddressOf());
 }
 
-void ConstantBuffer::Update(Renderer& renderer, size_t type_size, void* v_ptr)
+void ConstantBuffer::Update(Renderer& renderer, unsigned int type_size, void* v_ptr)
 {
 	// map the subresource
 	auto msr = D3D11_MAPPED_SUBRESOURCE{ };

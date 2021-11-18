@@ -7,10 +7,10 @@ using Matrix = DirectX::XMMATRIX;
 class ConstantBuffer : public IBindable
 {
 public:
-	ConstantBuffer(Renderer& renderer, size_t type_size, void* v_ptr);
+	ConstantBuffer(Renderer& renderer, unsigned int type_size, void* v_ptr);
 	~ConstantBuffer() override = default;
 
-	void Update(Renderer& renderer, size_t type_size, void* v_ptr);
+	void Update(Renderer& renderer, unsigned int type_size, void* v_ptr);
 
 protected:
 	buffer buffer;
@@ -19,7 +19,7 @@ protected:
 class VertexConstantBuffer : public ConstantBuffer
 {
 public:
-	VertexConstantBuffer(Renderer& renderer, size_t type_size, void* v_ptr)
+	VertexConstantBuffer(Renderer& renderer, unsigned int type_size, void* v_ptr)
 		: ConstantBuffer(renderer, type_size, v_ptr) {}
 	
 	~VertexConstantBuffer() override = default;
@@ -30,7 +30,7 @@ public:
 class PixelConstantBuffer : public ConstantBuffer
 {
 public:
-	PixelConstantBuffer(Renderer& renderer, size_t type_size, void* v_ptr)
+	PixelConstantBuffer(Renderer& renderer, unsigned int type_size, void* v_ptr)
 		: ConstantBuffer(renderer, type_size, v_ptr) {}
 
 	~PixelConstantBuffer() override = default;

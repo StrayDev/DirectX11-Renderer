@@ -62,13 +62,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="app\include\Window.h">
+    <ClInclude Include="app\include\Core\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="app\include\Application.h">
+    <ClInclude Include="app\include\Core\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="app\include\Event.h">
+    <ClInclude Include="app\include\Core\Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="app\include\Input\Input.h">

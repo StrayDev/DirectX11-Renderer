@@ -7,7 +7,7 @@ IndexBuffer::IndexBuffer(Renderer& renderer, const Indicies& indicies)
 {
 	auto data = D3D11_BUFFER_DESC
 	{
-		.ByteWidth = size_t(sizeof(unsigned short) * COUNT),
+		.ByteWidth = static_cast<unsigned int>(sizeof(unsigned short) * COUNT),
 		.Usage = D3D11_USAGE_DEFAULT,
 		.BindFlags = D3D11_BIND_INDEX_BUFFER,
 		.CPUAccessFlags = 0u,

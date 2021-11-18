@@ -1,5 +1,5 @@
-#include "Window.h"
-#include "Event.h"
+#include "Core/Window.h"
+#include "Core/Event.h"
 
 LRESULT CALLBACK Window::SetupProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -120,7 +120,7 @@ bool Window::ProcessMessages()
 	{
 		if (msg.message == WM_QUIT)
 		{
-			exit_code_ =  msg.wParam;
+			exit_code_ =  static_cast<int>(msg.wParam);
 			return false;
 		}
 

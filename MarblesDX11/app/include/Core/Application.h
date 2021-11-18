@@ -3,7 +3,7 @@
 #include "Window.h"
 #include "Renderer/IRendereable.h"
 #include "Renderer/Renderer.h"
-#include "input.h"
+#include "Input/Input.h"
 
 class Application 
 {

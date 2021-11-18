@@ -29,7 +29,7 @@ void Mesh::Render(Renderer& renderer)
 		bind->BindToPipeline(renderer);
 	}
 	size_t count = i_buffer->GetIndexCount();
-	GetContext(renderer).DrawIndexed(count, 0u, 0u);	
+	GetContext(renderer).DrawIndexed(count, 0u, 0);	
 }
 
 void Mesh::CreatePixelShader(Renderer& renderer)

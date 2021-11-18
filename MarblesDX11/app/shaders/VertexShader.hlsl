@@ -1,7 +1,7 @@
 cbuffer CBuffer
 {
-	matrix modelViewProj;
-	matrix model;
+	matrix world_matrix;
+	matrix inverse_transpose;
 };
 
 struct VSOut
@@ -14,9 +14,9 @@ struct VSOut
 VSOut main(float3 pos : Position, float3 n : Normal)
 {
 	VSOut vso;
-	vso.worldPos = (float3)mul(float4(pos, 1.0f), model);
-	vso.normal = mul(n, (float3x3)model);
-	vso.pos = mul(float4(pos, 1.0f), modelViewProj);
+    vso.worldPos = (float3) mul(float4(pos, 1.0f), world_matrix);
+    vso.normal = mul(n, (float3x3) world_matrix);
+    vso.pos = mul(float4(pos, 1.0f), inverse_transpose);
 	return vso;
 }
 

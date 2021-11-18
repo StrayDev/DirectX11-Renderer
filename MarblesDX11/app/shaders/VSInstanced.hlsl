@@ -20,8 +20,8 @@ struct AppData
 struct VSO
 {
     float4 PositionWS : TEXCOORD1;
-    float3 NormalWS : TEXCOORD2;
-    float2 TexCoord : TEXCOORD0;
+    float3 NormalWS   : TEXCOORD2;
+    float2 TexCoord   : TEXCOORD0;
     
     // SV_POS is consumed by the rasterizor 
     float4 Position : SV_Position;

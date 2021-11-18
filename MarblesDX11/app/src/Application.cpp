@@ -34,6 +34,10 @@ void Application::Init()
 	loader.LoadObj("models/sphere.obj");
 	mesh_data = loader.GetMeshData();
 	obj_list.push_back(std::make_unique<Mesh>(*renderer_, mesh_data));
+
+	loader.LoadObj("models/cat.obj");
+	mesh_data = loader.GetMeshData();
+	obj_list.push_back(std::make_unique<Mesh>(*renderer_, mesh_data));
 }
 
 int Application::Run()
@@ -55,27 +59,36 @@ int Application::Run()
 
 
 		renderer_->PreRender();
-
+		
 		static float b = 0;
 		auto t = 
 			DirectX::XMMatrixRotationZ(b += 0.01f) *
 			DirectX::XMMatrixRotationX(b) *
 			DirectX::XMMatrixTranslation(2, 0, 0.f);
 		
-		obj_list[0]->SetTransform(t);
-		obj_list[0]->Render(*renderer_);
-		
-
 		static float a = 0;
 		auto t2 =
 			DirectX::XMMatrixRotationY(a += 0.01f) *
 			DirectX::XMMatrixTranslation(-2, 0, 0);
+
+		static float c = 0;
+		auto t3 =
+			DirectX::XMMatrixRotationY(c += 0.01f) *
+			DirectX::XMMatrixTranslation(0, -200, 0) *
+			DirectX::XMMatrixScaling(.01, .01, .01);
+
+
+		obj_list[0]->SetTransform(t);
+		obj_list[0]->Render(*renderer_);
 		
-		obj_list[1]->SetTransform(t2);
 		obj_list[1]->Render(*renderer_);
+		obj_list[1]->SetTransform(t2);
+		
+		//obj_list[2]->Render(*renderer_);
+		//obj_list[2]->SetTransform(t3);
 		
 
-		renderer_->PostRender(); 		   
+		renderer_->PostRender(); 	   
 	}
 	
 	return 0;

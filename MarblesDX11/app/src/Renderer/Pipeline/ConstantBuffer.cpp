@@ -41,18 +41,17 @@ void PixelConstantBuffer::BindToPipeline(Renderer& renderer)
 // transform
 TransformConstantBuffer::TransformConstantBuffer(Renderer& renderer, Matrix& trans)
 	: transform(trans), 
-	v_buffer(VertexConstantBuffer(renderer, sizeof(Matrix), static_cast<void*>(&trans)))
+	v_buffer(VertexConstantBuffer(renderer, sizeof(Transforms), static_cast<void*>(&trans)))
 {}
 
 void TransformConstantBuffer::BindToPipeline(Renderer& renderer)
 {
-	auto m = DX::XMMatrixTranspose(transform);
-	auto mv = DirectX::XMMatrixTranspose( transform * renderer.GetView() * renderer.GetPerspective());
-	Transforms tf { mv, m };
+	auto wm = DX::XMMatrixTranspose(transform);
+	//auto it = DX::XMMatrixInverse(nullptr, wm);
+	auto wvp = DirectX::XMMatrixTranspose( transform * renderer.GetView() * renderer.GetPerspective());
+	Transforms tf { wm, /*it,*/ wvp };
 	
 	v_buffer.Update(renderer, sizeof(Transforms), static_cast<void*>(&tf));
 	v_buffer.BindToPipeline(renderer);
 }
-
-
 

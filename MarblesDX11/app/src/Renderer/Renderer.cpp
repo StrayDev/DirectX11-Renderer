@@ -2,6 +2,9 @@
 #include "Renderer/IRendereable.h"
 #include "Renderer/Vertex.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "lib\STBImage.h"
+
 #include <d3dcompiler.h>
 
 #pragma comment(lib, "d3d11.lib")
@@ -39,40 +42,90 @@ Renderer::Renderer(HWND w_handle)
 	vp.TopLeftY = 0;
 	context_->RSSetViewports(1u, &vp);
 
-	// make the lighting 
-	//light_data = 
-	//{
-	//	.Ambient = { 100.f, .5f, .5f, 1.f },
-	//	.Diffuse = { .5f, .5f, .5f, 1.f },
-	//	.Specular = { .5f, .5f, .5f, 1.f },
-	//	.Direction = { .5f, .5f, .5f },
-	//};
+	// load image
+	int w, h, channels;
+	auto* path = "textures/debug02.png";
+	auto* image = stbi_load(path, &w, &h, &channels, 0);
+	if (image == nullptr) std::cout << "failed to load : " << path << '\n';
+	std::cout << path << " loaded, " << w << " by " << h << " with " << channels << " channels" << '\n';
 
-	//mat_data =
-	//{
-	//	.Ambient = { .5f, .7f, .45f, 1.f },
-	//	.Diffuse = { .5f, .7f, .45f, 1.f },
-	//	.Specular = { .2f, .2f, .2f, 1.f },
-	//};
-
-	//auto eye = DX::XMFLOAT3(0, 0, -5);
-	//
-	//auto e = std::make_unique<PixelConstantBuffer>(*this, sizeof(eye), static_cast<void*>(&eye));
-	//e->BindToPipeline(*this);
+	// create the sampler
+	auto data = D3D11_SAMPLER_DESC
+	{
+		.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR,
+		.AddressU = D3D11_TEXTURE_ADDRESS_WRAP,
+		.AddressV = D3D11_TEXTURE_ADDRESS_WRAP,
+		.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP,
+		.MipLODBias = 0.0f,
+		.MaxAnisotropy = 1,
+		.ComparisonFunc = D3D11_COMPARISON_NEVER,
+		.BorderColor = { 1.0f, 1.0f, 1.0f, 1.0f },
+		.MinLOD = -FLT_MAX,
+		.MaxLOD = FLT_MAX,
+	};
 	
-	//auto pos = DX::XMFLOAT3(.0f, .0f, .0f);
-	//lightBuffer = std::make_unique<PixelConstantBuffer>(*this, sizeof(pos), static_cast<void*>(&pos));
-	//lightBuffer->BindToPipeline(*this);
+	// create sampler object
+	auto hr = device_->CreateSamplerState(&data, &sampler_state_);
+	
+	// create material
+	struct Material
+	{
+		Material() :
+			Emissive(0.0f, 0.0f, 0.0f, 1.0f), 
+			Ambient(0.1f, 0.1f, 0.1f, 1.0f),
+			Diffuse(1.0f, 1.0f, 1.0f, 1.0f),
+			Specular(1.0f, 1.0f, 1.0f, 1.0f),
+			SpecularPower(128.0f),
+			UseTexture(false)	
+		{}
 
-	//materialBuffer = std::make_unique<PixelConstantBuffer>(*this, sizeof(mat_data), static_cast<void*>(&mat_data));
-	//materialBuffer->BindToPipeline(*this);
+		using float4 = DX::XMFLOAT4;
+
+		float4 Emissive;
+		float4 Ambient;
+		float4 Diffuse;
+		float4 Specular;
+
+		float SpecularPower;
+		int UseTexture;
+
+		float PADDING[2];
+	};
+
+	struct MaterialProperties
+	{
+		Material material;
+	};
+
+	//// some materials
+	//MaterialProperties defaultMaterial;
+	//m_MaterialProperties.push_back(defaultMaterial);
+
+	//MaterialProperties greenMaterial;
+	//greenMaterial.Material.Ambient = XMFLOAT4(0.07568f, 0.61424f, 0.07568f, 1.0f);
+	//greenMaterial.Material.Diffuse = XMFLOAT4(0.07568f, 0.61424f, 0.07568f, 1.0f);
+	//greenMaterial.Material.Specular = XMFLOAT4(0.07568f, 0.61424f, 0.07568f, 1.0f);
+	//greenMaterial.Material.SpecularPower = 76.8f;
+	//m_MaterialProperties.push_back(greenMaterial);
+
+	//MaterialProperties redPlasticMaterial;
+	//redPlasticMaterial.Material.Diffuse = XMFLOAT4(0.6f, 0.1f, 0.1f, 1.0f);
+	//redPlasticMaterial.Material.Specular = XMFLOAT4(1.0f, 0.2f, 0.2f, 1.0f);
+	//redPlasticMaterial.Material.SpecularPower = 32.0f;
+	//m_MaterialProperties.push_back(redPlasticMaterial);
+
+	//MaterialProperties pearlMaterial;
+	//pearlMaterial.Material.Ambient = XMFLOAT4(0.25f, 0.20725f, 0.20725f, 1.0f);
+	//pearlMaterial.Material.Diffuse = XMFLOAT4(1.0f, 0.829f, 0.829f, 1.0f);
+	//pearlMaterial.Material.Specular = XMFLOAT4(0.296648f, 0.296648f, 0.296648f, 1.0f);
+	//pearlMaterial.Material.SpecularPower = 11.264f;
+	//m_MaterialProperties.push_back(pearlMaterial);
 }
 
 void Renderer::PreRender()
 {
 	ClearBuffer(0, 0, 1);
-
-	//lightBuffer->BindToPipeline(*this);
+	// pre frame bindables
 }
 
 void Renderer::PostRender()

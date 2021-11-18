@@ -9,6 +9,7 @@ PixelShader::PixelShader(Renderer& renderer)
 	pixel_shader = Microsoft::WRL::ComPtr<ID3D11PixelShader>();
 	auto& blob = GetBlob(renderer);
 
+	//D3DReadFileToBlob(L"PSLitTexture.cso", &blob);
 	D3DReadFileToBlob(L"LitPixelShader.cso", &blob);
 	GetDevice(renderer).CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixel_shader);
 }

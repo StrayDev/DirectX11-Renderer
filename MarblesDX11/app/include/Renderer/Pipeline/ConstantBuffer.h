@@ -52,7 +52,8 @@ private:
 
 	struct Transforms
 	{
-		Matrix modelViewProj;
-		Matrix model;
+		Matrix world_matrix;
+		/*Matrix inverse_transpose;*/
+		Matrix world_view_projection;
 	};
 };

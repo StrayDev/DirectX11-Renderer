@@ -131,13 +131,15 @@
     <ClInclude Include="app\include\ObjLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="app\include\lib\STBImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="app\shaders\VertexShader.hlsl" />
-    <FxCompile Include="app\shaders\PixelShader.hlsl" />
     <FxCompile Include="app\shaders\LitPixelShader.hlsl" />
-    <FxCompile Include="app\shaders\SimplePhongVS.hlsl" />
-    <FxCompile Include="app\shaders\InstancedPhongVS.hlsl" />
-    <FxCompile Include="app\shaders\TexturedLitPixelShader.hlsl" />
+    <FxCompile Include="app\shaders\VSPerObject.hlsl" />
+    <FxCompile Include="app\shaders\VSInstanced.hlsl" />
+    <FxCompile Include="app\shaders\PSLitTexture.hlsl" />
   </ItemGroup>
 </Project>

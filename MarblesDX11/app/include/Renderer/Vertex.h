@@ -5,11 +5,13 @@
 
 namespace DX = DirectX;
 using vector3 = DirectX::XMFLOAT3;
+using vector2 = DirectX::XMFLOAT2;
 
 struct Vertex
 {
 	vector3 pos;
 	vector3 normal;
+	vector2 tex_0;
 
 	//static void GenerateFaceNormalsIndependant(std::vector<Vertex>& vertices, std::vector<unsigned short>& indices)
 	//{

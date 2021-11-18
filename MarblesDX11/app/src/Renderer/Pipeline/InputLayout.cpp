@@ -7,8 +7,6 @@ InputLayout::InputLayout(Renderer& renderer)
 {
 	 input_layout = Microsoft::WRL::ComPtr<ID3D11InputLayout>();
 
-	 size_t i;
-
 	const D3D11_INPUT_ELEMENT_DESC input_data[] =
 	{
 		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },

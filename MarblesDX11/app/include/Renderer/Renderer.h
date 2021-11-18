@@ -73,9 +73,11 @@ private:
 
 	com_ptr<ID3DBlob> blob_{ nullptr };
 
-	std::unique_ptr<ConstantBuffer> lightBuffer { nullptr };
-	std::unique_ptr<ConstantBuffer> materialBuffer{ nullptr };
-	DirectionalLight light_data;
-	Material mat_data;
+	com_ptr<ID3D11SamplerState> sampler_state_{ nullptr };
+
+	//std::unique_ptr<ConstantBuffer> lightBuffer { nullptr };
+	//std::unique_ptr<ConstantBuffer> materialBuffer{ nullptr };
+	
+
 
 };
